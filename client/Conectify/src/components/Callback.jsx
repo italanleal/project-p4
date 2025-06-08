@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { getToken, currentToken } from './utils/auth';
+import { getToken, currentToken } from '../auth/auth.js';
 import { useNavigate } from 'react-router-dom';
 
 export default function Callback() {

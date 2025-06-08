@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import Login from './Login';
-import Dashboard from './Dashboard';
-import { currentToken, getToken, getUserData, refreshToken } from './utils/auth';
+import Login from './components/Login.jsx';
+import Dashboard from './components/Dashboard.jsx';
+import { currentToken, getToken, getUserData, refreshToken } from './auth/auth';
 
 function isTokenExpired() {
     const expires = currentToken.expires;
