@@ -16,5 +16,12 @@ export default function Callback() {
         }
     }, []);
 
-    return <p>Processing login...</p>;
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50">
+            <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-emerald-500 border-solid mx-auto mb-6"></div>
+                <p className="text-lg font-medium text-gray-700">Processing login...</p>
+            </div>
+        </div>
+    );
 }
