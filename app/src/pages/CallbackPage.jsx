@@ -4,7 +4,7 @@ const clientId = 'd1c4219dadaf49bebc3a5d962b1dcb20';
 const redirectUrl = 'http://127.0.0.1:8888/callback';
 const authorizationEndpoint = 'https://accounts.spotify.com/authorize';
 const tokenEndpoint = 'https://accounts.spotify.com/api/token';
-const scope = 'user-read-private user-read-email';
+const scope = 'user-read-private user-read-email user-top-read';
 
 function CallbackPage() {
     const [userData, setUserData] = useState(null);
@@ -24,7 +24,7 @@ function CallbackPage() {
 
             const now = new Date();
             const expiry = new Date(now.getTime() + expires_in * 1000);
-            localStorage.setItem('expires', expiry);
+            localStorage.setItem('expires', expiry.toString());
         },
     };
 
@@ -122,6 +122,22 @@ function CallbackPage() {
         window.location.href = redirectUrl;
     };
 
+    const sendRequest = async () => {
+        const response = await fetch('http://127.0.0.1:3000/api/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: userData.userId,
+                displayName: userData.name,
+                profileImageUrl: userData.images[0].url
+            })
+        });
+        const data = await response.json();
+        console.log(data);
+    }
+
     if (!currentToken.access_token) {
         return (
             <div>
@@ -158,6 +174,9 @@ function CallbackPage() {
                 <tr><td>Expiration at</td><td>{tokenInfo.expires}</td></tr>
                 </tbody>
             </table>
+
+            <h2>BackEnd Integration</h2>
+            <button onClick={sendRequest}>Send Request</button>
         </div>
     );
 }
