@@ -39,7 +39,7 @@ export async function redirectToSpotifyAuthorize() {
 
     const params = new URLSearchParams({
         response_type: 'code',
-        client_id: clientId,
+            client_id: clientId,
         scope,
         code_challenge_method: 'S256',
         code_challenge,
@@ -51,7 +51,7 @@ export async function redirectToSpotifyAuthorize() {
 
 export async function getToken(code) {
     const code_verifier = localStorage.getItem('code_verifier');
-
+    console.log("Using code_verifier:", code_verifier);
     const response = await fetch(tokenEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
