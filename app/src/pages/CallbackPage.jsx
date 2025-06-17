@@ -123,11 +123,26 @@ function CallbackPage() {
     };
 
     const sendRequest = async () => {
+
         const response = await fetch('http://127.0.0.1:3000/api/graph', {
             method: 'GET',
             headers: { Authorization: `Bearer ${currentToken.access_token}` }
-        });
+        })
         const data = await response.json();
+        // const response = await fetch('http://127.0.0.1:3000/api/user', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({
+        //         userId: userData.id,
+        //         displayName: userData?.display_name,
+        //         profileImageUrl: userData.images[0].url
+        //     }),
+        // });
+        // const data = await response.json();
+
+
         console.log(data);
     }
 

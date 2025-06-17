@@ -15,7 +15,7 @@ export class UserController {
             return
         }
 
-        res.status(201).json()
+        res.status(201).json({})
     }
 
     async graphUserData(req, res) {
