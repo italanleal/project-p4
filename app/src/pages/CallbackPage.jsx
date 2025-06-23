@@ -124,9 +124,9 @@ function CallbackPage() {
 
     const sendRequest = async () => {
 
-        const response = await fetch('http://127.0.0.1:3000/api/graph', {
+        const response = await fetch('http://127.0.0.1:3000/api/artist', {
             method: 'GET',
-            headers: { Authorization: `Bearer ${currentToken.access_token}` }
+            headers: { Authorization: `Bearer ${currentToken.access_token}` },
         })
         const data = await response.json();
         // const response = await fetch('http://127.0.0.1:3000/api/user', {

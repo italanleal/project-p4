@@ -78,6 +78,25 @@ export class UserController {
             res.status(500).json({ error: error.message })
         }
     }
+
+    async topArtists(req, res) {
+        const access_token = req.headers.authorization.split(' ')[1]
+
+        if (!access_token) return res.status(401).json({ message: 'Token de acesso não fornecido.' })
+        try {
+            const user_data = await (await fetch('https://api.spotify.com/v1/me', {
+                headers: {Authorization: `Bearer ${access_token}`},
+            })).json()
+
+            const userId = user_data.id
+
+            const result = await this.userService.returnMostListenedArtistsWithTracksFromUser(userId)
+            res.status(200).json({data: result})
+
+        } catch (error) {
+            res.status(500).json({ error: error.message })
+        }
+    }
 }
 
 export function createUserController(userService, trackService, artistService) {

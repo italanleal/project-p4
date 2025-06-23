@@ -14,6 +14,10 @@ export class UserService {
     async userListenToTrack(userId, trackId) {
         return await this.userRepository.userListenToTrack(userId, trackId);
     }
+
+    async returnMostListenedArtistsWithTracksFromUser(userId){
+        return await this.userRepository.returnMostListenedArtistsWithTracksFromUser(userId);
+    }
 }
 
 export function createUserService(userRepository) {
