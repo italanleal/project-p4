@@ -52,13 +52,9 @@ export class UserRepository {
         const session = this.conn.getSession();
         try {
             const result = await session.run(
-                `
-                MATCH (u:User { userId: $userId })
-                 
+                `MATCH (u:User { userId: $userId })
                 MATCH (t:Track { trackId: $trackId })
-                
-                MERGE (u)-[:LISTEN_TO]->(t)
-                `,
+                MERGE (u)-[:LISTEN_TO]->(t)`,
                 { userId: userId, trackId: trackId }
             )
         } finally {

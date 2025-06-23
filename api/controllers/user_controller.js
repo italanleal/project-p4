@@ -1,9 +1,11 @@
 import {createUser} from "../models/user.js";
+import {createArtist} from "../models/artist.js";
 
 export class UserController {
-    constructor(userService, trackService) {
+    constructor(userService, trackService, artistService) {
         this.userService = userService;
         this.trackService = trackService;
+        this.artistService = artistService;
     }
     async createUser(req, res) {
         const newUser = createUser(req.body.userId, req.body.displayName, req.body.profileImageUrl, false)
@@ -27,41 +29,57 @@ export class UserController {
                 headers: { Authorization: `Bearer ${access_token}` },
             })).json()
 
-            const tracks_data = await (await fetch('https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=50&offset=0', {
+            const tracks_data = await (await fetch('https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=50&offset=0', {
                 method: 'GET',
                 headers: { Authorization: `Bearer ${access_token}` }
             })).json()
 
             const userId = user_data.id
 
-            const tracks = tracks_data.items.map(track => {
+            const data = tracks_data.items.map(track => {
                 return {
-                    trackId: track.id,
-                    trackName: track.name,
-                    albumImageUrl: track.album.images[0].url
+                    track: {
+                        trackId: track.id,
+                        trackName: track.name,
+                        albumImageUrl: track.album.images[0].url
+                    },
+                    artists: track.artists
+
                 }
             })
 
-            const results = await Promise.all(
-                tracks.map(async (track) => {
+            const op1 = await Promise.all(
+                data.map(async (d) => {
                     try {
-                        return await this.trackService.createTrack(track);
+                        return await this.trackService.createTrack(d.track);
                     } catch (err) {
-                        return track
+                        return d.track
                     }
                 })
             );
 
-            await Promise.all(results.map(track => this.userService.userListenToTrack(userId, track.trackId)))
+            const op2 = []
+            for (const d of data) {
+                op2.push(await Promise.all(d.artists.map(async artist => {
+                    const a = createArtist(artist.id, artist.name)
+                    try {
+                        return await this.artistService.createArtist(a);
+                    } catch (err) {
+                        return a
+                    }
+                })))
+            }
+
+            await Promise.all(op2.map((artists, index) => this.artistService.artistsAuthorsTrack(artists, op1[index].trackId)))
+            await Promise.all(op1.map(track => this.userService.userListenToTrack(userId, track.trackId)))
 
             res.status(200).json({})
         } catch (error) {
-            console.log(error)
             res.status(500).json({ error: error.message })
         }
     }
 }
 
-export function createUserController(userService, trackService) {
-    return new UserController(userService, trackService);
+export function createUserController(userService, trackService, artistService) {
+    return new UserController(userService, trackService, artistService);
 }

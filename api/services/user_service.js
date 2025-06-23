@@ -12,7 +12,7 @@ export class UserService {
     }
 
     async userListenToTrack(userId, trackId) {
-        await this.userRepository.userListenToTrack(userId, trackId);
+        return await this.userRepository.userListenToTrack(userId, trackId);
     }
 }
 

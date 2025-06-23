@@ -7,6 +7,8 @@ import {createUserService} from "./services/user_service.js";
 import {createUserController} from "./controllers/user_controller.js";
 import {createTrackRepository} from "./repositories/track_repository.js";
 import {createTrackService} from "./services/track_service.js";
+import {createArtistService} from "./services/artist_service.js";
+import {createArtistRepository} from "./repositories/artist_repository.js";
 
 const app = express();
 const PORT = 3000;
@@ -16,12 +18,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const artistRepository = createArtistRepository(conn);
+const artistService = createArtistService(artistRepository);
+
 const trackRepository = createTrackRepository(conn);
 const trackService = createTrackService(trackRepository);
 
 const userRepository = createUserRepository(conn);
 const userService = createUserService(userRepository);
-const userController = createUserController(userService, trackService);
+const userController = createUserController(userService, trackService, artistService);
 
 app.get('/api/graph', async (req, res) => await userController.graphUserData(req, res))
 app.post('/api/user', async (req, res) => await userController.createUser(req, res))
