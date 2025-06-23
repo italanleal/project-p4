@@ -8,12 +8,9 @@ export class TrackRepository {
 
         try {
             const result = await session.run(
-                `CREATE (t:Track {
-                   trackId: $trackId,
-                   trackName: $trackName, 
-                   albumImageUrl: $albumImageUrl
-                 }) 
-                 RETURN t`,
+                `MERGE (t:Track { trackId: $trackId })
+                ON CREATE SET t.trackName = $trackName, t.albumImageUrl = $albumImageUrl
+                RETURN t`,
                 {
                     trackId: track.trackId,
                     trackName: track.trackName,
