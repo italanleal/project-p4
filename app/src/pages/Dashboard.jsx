@@ -1,5 +1,6 @@
-import DashboardGraphs from "@/components/DashboardGraphs";
+// src/pages/Dashboard.jsx
 import AppNavbar from "@/components/AppNavbar";
+import GraphRenderer from "@/components/GraphRenderer";
 
 export default function Dashboard({ user, onLogout, onRefresh }) {
     return (
@@ -14,8 +15,8 @@ export default function Dashboard({ user, onLogout, onRefresh }) {
                 ]}
             />
 
-            <div className="flex-1 bg-gradient-to-br from-background to-muted flex flex-col items-center justify-start px-4 py-12 space-y-8">
-                <DashboardGraphs />
+            <div className="flex-1 p-4">
+                <GraphRenderer />
             </div>
         </div>
     );
