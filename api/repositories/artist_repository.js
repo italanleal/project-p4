@@ -57,6 +57,7 @@ export class ArtistRepository {
             await session.close();
         }
     }
+
 }
 
 export function createArtistRepository(conn) {
