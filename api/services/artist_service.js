@@ -1,3 +1,4 @@
+
 export class ArtistService {
     constructor(artistRepository) {
         this.artistRepository = artistRepository;
@@ -15,6 +16,9 @@ export class ArtistService {
 
     async artistsAuthorsTrack(artists, trackId){
         await this.artistRepository.artistsAuthorsTrack(artists, trackId);
+    }
+    async getGraphByArtistId(artistId) {
+    return await this.artistRepository.fetchByArtistId(artistId);
     }
 }
 

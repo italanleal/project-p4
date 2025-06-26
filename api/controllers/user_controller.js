@@ -1,5 +1,5 @@
-import {createUser} from "../models/user.js";
-import {createArtist} from "../models/artist.js";
+import { createUser } from "../models/user.js";
+import { createArtist } from "../models/artist.js";
 
 export class UserController {
     constructor(userService, trackService, artistService) {
@@ -85,18 +85,20 @@ export class UserController {
         if (!access_token) return res.status(401).json({ message: 'Token de acesso não fornecido.' })
         try {
             const user_data = await (await fetch('https://api.spotify.com/v1/me', {
-                headers: {Authorization: `Bearer ${access_token}`},
+                headers: { Authorization: `Bearer ${access_token}` },
             })).json()
 
             const userId = user_data.id
 
             const result = await this.userService.returnMostListenedArtistsWithTracksFromUser(userId)
-            res.status(200).json({data: result})
+            res.status(200).json({ data: result })
 
         } catch (error) {
             res.status(500).json({ error: error.message })
         }
     }
+    
+
 }
 
 export function createUserController(userService, trackService, artistService) {

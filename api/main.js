@@ -5,6 +5,7 @@ import {conn} from "./database/neo4j.database.js";
 import {createUserRepository} from "./repositories/user_repository.js";
 import {createUserService} from "./services/user_service.js";
 import {createUserController} from "./controllers/user_controller.js";
+import {createArtistController} from './controllers/artist_controller.js';
 import {createTrackRepository} from "./repositories/track_repository.js";
 import {createTrackService} from "./services/track_service.js";
 import {createArtistService} from "./services/artist_service.js";
@@ -27,9 +28,11 @@ const trackService = createTrackService(trackRepository);
 const userRepository = createUserRepository(conn);
 const userService = createUserService(userRepository);
 const userController = createUserController(userService, trackService, artistService);
+const artistController = createArtistController(userService,trackService,artistService);
 
 app.get('/api/graph', async (req, res) => await userController.graphUserData(req, res))
 app.get('/api/artist', async (req, res) => await userController.topArtists(req, res))
+app.get('/api/listens/:artistID', async (req, res) => await artistController.listensByArtist(req, res))
 app.post('/api/user', async (req, res) => await userController.createUser(req, res))
 
 // Start the server

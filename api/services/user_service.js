@@ -18,6 +18,7 @@ export class UserService {
     async returnMostListenedArtistsWithTracksFromUser(userId){
         return await this.userRepository.returnMostListenedArtistsWithTracksFromUser(userId);
     }
+  
 }
 
 export function createUserService(userRepository) {

@@ -62,13 +62,13 @@ export class UserRepository {
         }
     }
 
-    async returnMostListenedArtistsWithTracksFromUser(userId){
+    async returnMostListenedArtistsWithTracksFromUser(userId) {
         const session = this.conn.getSession();
         try {
             const result = await session.run(
                 `MATCH (u:User { userId: $userId })-[:LISTEN_TO]->(t:Track)<-[:AUTHORS]-(a:Artist)
                 WITH u, a, collect(DISTINCT t) AS tracks
-                WHERE size(tracks) > 1
+                WHERE size(tracks) > 0
                 UNWIND tracks AS t
                 MATCH (u)-[r1:LISTEN_TO]->(t)<-[r2:AUTHORS]-(a)
                 RETURN u, r1, t, r2, a`,
@@ -80,6 +80,7 @@ export class UserRepository {
         }
 
     }
+    
 }
 
 export function createUserRepository(conn) {

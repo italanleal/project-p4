@@ -57,6 +57,23 @@ export class ArtistRepository {
             await session.close();
         }
     }
+    async fetchByArtistId(artistId) {
+        const session = this.conn.getSession();
+        try {
+            const result = await session.run(
+                `
+                MATCH (a:Artist {artistId: $artistId})-[r1:AUTHORS]->(t:Track)
+                MATCH (u:User)-[r2:LISTEN_TO]->(t)
+                RETURN a, r1, t, r2, u
+                `,
+                { artistId }
+            );
+            return result.records; 
+
+        } finally{
+            await session.close();
+        }
+    }
 
 }
 
