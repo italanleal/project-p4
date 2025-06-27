@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Dashboard from "@/pages/Dashboard.jsx";
 
 const clientId = 'd1c4219dadaf49bebc3a5d962b1dcb20';
-const redirectUrl = 'http://127.0.0.1:8888/callback';
+const redirectUrl = 'https://project-p4.vercel.app/';
 const authorizationEndpoint = 'https://accounts.spotify.com/authorize';
 const tokenEndpoint = 'https://accounts.spotify.com/api/token';
 const scope = 'user-read-private user-read-email user-top-read';
@@ -123,45 +123,76 @@ function CallbackPage() {
         window.location.href = redirectUrl;
     };
 
-    const sendRequest = async () => {
-
-        const response = await fetch('http://127.0.0.1:3000/api/artist', {
+    const mandaRequest = async () => {
+        const response = await fetch('http://127.0.0.1:3000/api/graph', {
             method: 'GET',
             headers: { Authorization: `Bearer ${currentToken.access_token}` },
         })
         const data = await response.json();
-        // const response = await fetch('http://127.0.0.1:3000/api/user', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //         userId: userData.id,
-        //         displayName: userData?.display_name,
-        //         profileImageUrl: userData.images[0].url
-        //     }),
-        // });
-        // const data = await response.json();
-
 
         console.log(data);
     }
 
-    if (!currentToken.access_token) {
-        return (
-            <div>
-                <h1>Welcome to the OAuth2 PKCE Example</h1>
-                <button onClick={redirectToSpotifyAuthorize}>Log in with Spotify</button>
-            </div>
-        );
+    const sendRequest = async () => {
+    
+        const response = await fetch('http://127.0.0.1:3000/api/artist/index', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        const data = await response.json();
+    
+        console.log(data);
     }
 
+    const mandaRequisicao = async () => {
+    try {
+        const response = await fetch('http://127.0.0.1:3000/api/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: userData?.id,
+                displayName: userData?.display_name,
+                profileImageUrl: userData?.images[0]?.url,
+                biography: "biozinha",
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Resposta da API:', data);
+    } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+    }
+};
+
+    
+
+    
+
+
+
+if (!currentToken.access_token) {
     return (
         <div>
-            <h1>Logged in as {userData?.display_name}</h1>
-            {userData?.images?.[0]?.url && <img width="150" src={userData.images[0].url} alt={userData.display_name} />}
-            <table>
-                <tbody>
+            <h1>Welcome to the OAuth2 PKCE Example</h1>
+            <button onClick={redirectToSpotifyAuthorize}>Log in with Spotify</button>
+        </div>
+    );
+}
+
+return (
+    <div>
+        <h1>Logged in as {userData?.display_name}</h1>
+        {userData?.images?.[0]?.url && <img width="150" src={userData.images[0].url} alt={userData.display_name} />}
+        <table>
+            <tbody>
                 <tr><td>Display name</td><td>{userData?.display_name}</td></tr>
                 <tr><td>Id</td><td>{userData?.id}</td></tr>
                 <tr><td>Email</td><td>{userData?.email}</td></tr>
@@ -169,26 +200,27 @@ function CallbackPage() {
                 <tr><td>Link</td><td><a href={userData?.href}>{userData?.href}</a></td></tr>
                 <tr><td>Profile Image</td><td><a href={userData?.images?.[0]?.url}>{userData?.images?.[0]?.url}</a></td></tr>
                 <tr><td>Country</td><td>{userData?.country}</td></tr>
-                </tbody>
-            </table>
+            </tbody>
+        </table>
 
-            <button onClick={refreshToken}>Refresh Token</button>
-            <button onClick={logout}>Log out</button>
+        <button onClick={refreshToken}>Refresh Token</button>
+        <button onClick={logout}>Log out</button>
 
-            <h2>OAuth Info</h2>
-            <table>
-                <tbody>
+        <h2>OAuth Info</h2>
+        <table>
+            <tbody>
                 <tr><td>Access token</td><td>{tokenInfo.access_token}</td></tr>
                 <tr><td>Refresh token</td><td>{tokenInfo.refresh_token}</td></tr>
                 <tr><td>Expiration at</td><td>{tokenInfo.expires}</td></tr>
-                </tbody>
-            </table>
+            </tbody>
+        </table>
 
             <h2>BackEnd Integration</h2>
             <Dashboard user={userData} onLogout={logout} ></Dashboard>
             <button onClick={sendRequest}>Send Request</button>
         </div>
     );
+
 }
 
 export default CallbackPage;

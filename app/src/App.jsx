@@ -6,13 +6,9 @@ import UserProfile from "@/pages/UserProfile.jsx";
 
 function App({ user, onLogout, onRefresh }) {
     return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/callback" element={<CallbackPage />} />
-                <Route path="/profile" element={<UserProfile/>} />
-            </Routes>
-        </Router>
+
+       <CallbackPage />
+
     );
 }
 
