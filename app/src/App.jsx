@@ -10,7 +10,7 @@ function App({ user, onLogout, onRefresh }) {
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/callback" element={<CallbackPage />} />
-                <Route path="/profile" element={<UserProfile user={}/>} />
+                <Route path="/profile" element={<UserProfile/>} />
             </Routes>
         </Router>
     );
