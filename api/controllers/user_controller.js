@@ -1,5 +1,5 @@
-import {createUser} from "../models/user.js";
-import {createArtist} from "../models/artist.js";
+import { createUser } from "../models/user.js";
+import { createArtist } from "../models/artist.js";
 
 export class UserController {
     constructor(userService, trackService, artistService) {
@@ -8,7 +8,7 @@ export class UserController {
         this.artistService = artistService;
     }
     async createUser(req, res) {
-        const newUser = createUser(req.body.userId, req.body.displayName, req.body.profileImageUrl, false)
+        const newUser = createUser(req.body.userId, req.body.displayName, req.body.profileImageUrl, req.body.biography)
 
         try {
             await this.userService.createUser(newUser)
@@ -20,7 +20,65 @@ export class UserController {
         res.status(201).json({})
     }
 
-    async graphUserData(req, res) {
+    async deleteUser(req, res) {
+
+        const userId = req.params.userId
+
+        if(!userId){
+            return res.status(400).json({ error: 'userId é obrigatório.' });
+        }
+        try {
+            await this.userService.deleteUser(userId)
+            res.status(204).send();
+        } catch (error) {
+            res.status(500).json({ error: error.message })
+            return
+        }
+    }
+
+    async updateUser(req,res){
+        const userId = req.params.userId;
+        const update = req.body;
+
+        if(!userId){
+            return res.status(400).json({ error: 'userId é obrigatório na URL.' });
+
+    }
+    try{
+       const updatedUser= await this.userService.updateUser(userId, update);
+       return res.status(200).json(updatedUser)
+        
+    }catch (error) {
+            return res.status(409).json({ error: error.message })
+            
+        }
+        
+    }
+
+    async returnUser(req, res) {
+        const userId = req.params.userId;
+
+        if (!userId) {
+            return res.status(400).json({ error: 'userId é obrigatório na URL.' });
+        }
+
+        try {
+            const user = await this.userService.returnUser(userId);
+
+            if (!user) {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+            }
+            console.log("User retornado:", user);
+
+            res.status(200).json(user);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+
+
+    async userData(req, res) {
         const access_token = req.headers.authorization.split(' ')[1]
 
         if (!access_token) return res.status(401).json({ message: 'Token de acesso não fornecido.' })
@@ -85,18 +143,22 @@ export class UserController {
         if (!access_token) return res.status(401).json({ message: 'Token de acesso não fornecido.' })
         try {
             const user_data = await (await fetch('https://api.spotify.com/v1/me', {
-                headers: {Authorization: `Bearer ${access_token}`},
+                headers: { Authorization: `Bearer ${access_token}` },
             })).json()
 
             const userId = user_data.id
 
             const result = await this.userService.returnMostListenedArtistsWithTracksFromUser(userId)
-            res.status(200).json({data: result})
+            res.status(200).json({ data: result })
 
         } catch (error) {
             res.status(500).json({ error: error.message })
         }
     }
+
+
+    
+
 }
 
 export function createUserController(userService, trackService, artistService) {
