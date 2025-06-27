@@ -12,7 +12,7 @@ import {createArtistService} from "./services/artist_service.js";
 import {createArtistRepository} from "./repositories/artist_repository.js";
 
 const app = express();
-const PORT = 3000;
+const PORT = 3051;
 
 // Middleware to parse JSON or URL-encoded bodies
 app.use(cors());
@@ -21,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const artistRepository = createArtistRepository(conn);
 const artistService = createArtistService(artistRepository);
+const artistController = createArtistController(artistService);
 
 const trackRepository = createTrackRepository(conn);
 const trackService = createTrackService(trackRepository);
@@ -28,15 +29,15 @@ const trackService = createTrackService(trackRepository);
 const userRepository = createUserRepository(conn);
 const userService = createUserService(userRepository);
 const userController = createUserController(userService, trackService, artistService);
-const artistController = createArtistController(artistService);
 
-app.get('/api/graph', async (req, res) => await userController.graphUserData(req, res))
-app.get('/api/artist', async (req, res) => await userController.topArtists(req, res))
-app.get('/api/graphListenByArtist/:artistID', async (req, res) => await artistController.listensByArtist(req, res))
 app.post('/api/user', async (req, res) => await userController.createUser(req, res))
 app.get('/api/user/:userId', async (req, res) => await userController.returnUser(req, res))
 app.put('/api/user/:userId', async (req, res) => await userController.updateUser(req, res))
 app.delete('/api/user/:userId', async (req, res) => await userController.deleteUser(req, res))
+
+app.get('/api/user/data', async (req, res) => await userController.userData(req, res))
+app.get('/api/artist/index', async (req, res) => await artistController.returnArtistsIndex(req, res))
+app.post('/api/network', async (req, res) => await artistController.renderNetwork(req, res))
 
 
 // Start the server

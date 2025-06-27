@@ -12,7 +12,7 @@ export class UserRepository {
                    userId: $userId,
                    userDisplayName: $userDisplayName, 
                    profileImageUrl: $profileImageUrl, 
-                   biography: user.biography
+                   biography: $biography
                  }) 
                  RETURN u`,
                 {
@@ -112,7 +112,7 @@ export class UserRepository {
             const result = await session.run(
                 `MATCH (u:User { userId: $userId })-[:LISTEN_TO]->(t:Track)<-[:AUTHORS]-(a:Artist)
                 WITH u, a, collect(DISTINCT t) AS tracks
-                WHERE size(tracks) > 0
+                WHERE size(tracks) > 2
                 UNWIND tracks AS t
                 MATCH (u)-[r1:LISTEN_TO]->(t)<-[r2:AUTHORS]-(a)
                 RETURN u, r1, t, r2, a`,
@@ -124,9 +124,7 @@ export class UserRepository {
         }
 
     }
-
 }
-
 export function createUserRepository(conn) {
     return new UserRepository(conn);
 }

@@ -6,12 +6,16 @@ export class UserService {
         this.userRepository = userRepository;
     }
     async createUser(user) {
-
-        const u = await this.userRepository.returnUser(user.userId);
-        if (u) {
-            throw new Error('User already exists');
+        try {
+            const u = await this.userRepository.returnUser(user.userId);
+            if (!u) {
+                return await this.userRepository.createUser(user);
+            }
+        } catch (e) {
+            throw e
         }
-        return await this.userRepository.createUser(user);
+        throw new Error('User already exists');
+
     }
     async updateUser(userId, update){
 

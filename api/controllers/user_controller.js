@@ -78,7 +78,7 @@ export class UserController {
 
 
 
-    async graphUserData(req, res) {
+    async userData(req, res) {
         const access_token = req.headers.authorization.split(' ')[1]
 
         if (!access_token) return res.status(401).json({ message: 'Token de acesso não fornecido.' })
@@ -155,6 +155,8 @@ export class UserController {
             res.status(500).json({ error: error.message })
         }
     }
+
+
     
 
 }
