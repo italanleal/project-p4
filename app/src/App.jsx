@@ -8,8 +8,7 @@ function App() {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/callback" element={<CallbackPage />} />
+                <Route path="/" element={<CallbackPage />} />
             </Routes>
         </Router>
     );
