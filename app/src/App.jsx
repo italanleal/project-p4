@@ -1,12 +1,14 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import CallbackPage from './pages/CallbackPage';
 import HomePage from './pages/HomePage';
-import './App.css'
+import UserProfile from "@/pages/UserProfile.jsx";
 
-function App() {
+function App({ user, onLogout, onRefresh }) {
     return (
+
        <CallbackPage />
+
     );
 }
 

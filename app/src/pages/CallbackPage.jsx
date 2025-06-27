@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Dashboard from "@/pages/Dashboard.jsx";
 
 const clientId = 'd1c4219dadaf49bebc3a5d962b1dcb20';
 const redirectUrl = 'https://project-p4.vercel.app/';
@@ -214,16 +215,12 @@ return (
             </tbody>
         </table>
 
-        <h2>BackEnd Integration</h2>
-        <button onClick={sendRequest}>Send artista</button>
-        <button onClick={mandaRequisicao}>Manda Usuario</button>
+            <h2>BackEnd Integration</h2>
+            <Dashboard user={userData} onLogout={logout} ></Dashboard>
+            <button onClick={sendRequest}>Send Request</button>
+        </div>
+    );
 
-        <div><button onClick={mandaRequest}>Manda graph</button></div>
-
-
-
-    </div>
-);
 }
 
 export default CallbackPage;
