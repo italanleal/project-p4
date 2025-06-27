@@ -1,11 +1,7 @@
-import { createUser } from "../models/user.js";
-import { createArtist } from "../models/artist.js";
-
 export class ArtistController{
     
-       constructor(userService, trackService, artistService) {
-        this.userService = userService;
-        this.trackService = trackService;
+       constructor(artistService) {
+     
         this.artistService = artistService;
     }
 
@@ -27,6 +23,6 @@ export class ArtistController{
 
 }
 
-export function createArtistController(userService, trackService, artistService){
-    return new ArtistController(userService, trackService, artistService)
+export function createArtistController(artistService){
+    return new ArtistController(artistService)
 }

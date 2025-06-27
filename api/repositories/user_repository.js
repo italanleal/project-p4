@@ -12,20 +12,64 @@ export class UserRepository {
                    userId: $userId,
                    userDisplayName: $userDisplayName, 
                    profileImageUrl: $profileImageUrl, 
-                   deleted: $deleted
+                   biography: user.biography
                  }) 
                  RETURN u`,
                 {
                     userId: user.userId,
                     userDisplayName: user.userDisplayName,
                     profileImageUrl: user.profileImageUrl,
-                    deleted: user.deleted
+                    biography: user.biography,
                 })
             return result.records[0].get(0).properties;
         } finally {
             await session.close();
         }
     }
+    async updateUser(userId, update) {
+        const session = this.conn.getSession();
+        try {
+            const result = await session.run(
+                `MATCH (u:User { userId: $userId })
+                SET u.userDisplayName = $userDisplayName,
+                    u.profileImageUrl = $profileImageUrl,
+                    u.biography = $biography
+            
+                 RETURN u`,
+                {
+                    userId,
+                    userDisplayName: update.userDisplayName,
+                    profileImageUrl: update.profileImageUrl,
+                    biography: update.biography,
+
+                }
+            );
+            if (result.records.length === 0) {
+                return null;
+            }
+
+            return result.records[0].get("u").properties;
+        } finally {
+            await session.close();
+        }
+    }
+    async deleteUser(userId) {
+        const session = this.conn.getSession();
+
+        try {
+            const result = await session.run(
+                `MATCH (u:User { userId: $userId }) DETACH DELETE u RETURN count(u) as deletedCount`,
+                { userId }
+            );
+
+            const deletedCount = result.records[0].get('deletedCount').toNumber();
+            return deletedCount > 0;  // true se deletou, false se não achou usuário
+
+        } finally {
+            await session.close();
+        }
+    }
+
     async returnUser(id) {
         const session = this.conn.getSession();
 
@@ -80,7 +124,7 @@ export class UserRepository {
         }
 
     }
-    
+
 }
 
 export function createUserRepository(conn) {

@@ -28,12 +28,16 @@ const trackService = createTrackService(trackRepository);
 const userRepository = createUserRepository(conn);
 const userService = createUserService(userRepository);
 const userController = createUserController(userService, trackService, artistService);
-const artistController = createArtistController(userService,trackService,artistService);
+const artistController = createArtistController(artistService);
 
 app.get('/api/graph', async (req, res) => await userController.graphUserData(req, res))
 app.get('/api/artist', async (req, res) => await userController.topArtists(req, res))
-app.get('/api/listens/:artistID', async (req, res) => await artistController.listensByArtist(req, res))
+app.get('/api/graphListenByArtist/:artistID', async (req, res) => await artistController.listensByArtist(req, res))
 app.post('/api/user', async (req, res) => await userController.createUser(req, res))
+app.get('/api/user/:userId', async (req, res) => await userController.returnUser(req, res))
+app.put('/api/user/:userId', async (req, res) => await userController.updateUser(req, res))
+app.delete('/api/user/:userId', async (req, res) => await userController.deleteUser(req, res))
+
 
 // Start the server
 app.listen(PORT, () => {
