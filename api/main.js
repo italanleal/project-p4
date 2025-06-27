@@ -12,7 +12,7 @@ import {createArtistService} from "./services/artist_service.js";
 import {createArtistRepository} from "./repositories/artist_repository.js";
 
 const app = express();
-const PORT = 3000;
+const PORT = 3051;
 
 // Middleware to parse JSON or URL-encoded bodies
 app.use(cors());
