@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Dashboard from "@/pages/Dashboard.jsx";
 
 const clientId = 'd1c4219dadaf49bebc3a5d962b1dcb20';
 const redirectUrl = 'http://127.0.0.1:8888/callback';
@@ -184,6 +185,7 @@ function CallbackPage() {
             </table>
 
             <h2>BackEnd Integration</h2>
+            <Dashboard user={userData} onLogout={logout} ></Dashboard>
             <button onClick={sendRequest}>Send Request</button>
         </div>
     );

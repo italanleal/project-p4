@@ -10,8 +10,8 @@ export default function Dashboard({ user, onLogout, onRefresh }) {
                 onLogout={onLogout}
                 onRefresh={onRefresh}
                 links={[
+                    { label: "Rede", to: "/rede" },
                     { label: "Dashboard", to: "/" },
-                    { label: "Grupos", to: "/groups" },
                 ]}
             />
 
