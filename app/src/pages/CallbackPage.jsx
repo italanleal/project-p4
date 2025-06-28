@@ -216,8 +216,9 @@ return (
         </table>
 
             <h2>BackEnd Integration</h2>
+            <button onClick={mandaRequest}></button>
             <Dashboard user={userData} onLogout={logout} ></Dashboard>
-            <button onClick={sendRequest}>Send Request</button>
+            <button onClick={mandaRequisicao}>Send Request</button>
         </div>
     );
 
