@@ -49,6 +49,18 @@ export class UserService {
         return await this.userRepository.returnUser(id)
     }
 
+    async returnArtistsByUser(id){
+        return await this.userRepository.returnArtistsByUser(id)
+    }
+
+    async returnTracksByUser(id){
+        return await this.userRepository.returnTracksByUser(id)
+    }
+
+    async returnArtistsAndTracksByUser(id){
+        return await this.userRepository.returnArtistsAndTracksByUser(id)
+    }
+
     async userListenToTrack(userId, trackId) {
         return await this.userRepository.userListenToTrack(userId, trackId);
     }
