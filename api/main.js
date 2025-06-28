@@ -31,9 +31,9 @@ const userService = createUserService(userRepository);
 const userController = createUserController(userService, trackService, artistService);
 
 app.post('/api/user', async (req, res) => await userController.createUser(req, res))
-app.get('/api/user/:userId', async (req, res) => await userController.returnUser(req, res))
-app.put('/api/user/:userId', async (req, res) => await userController.updateUser(req, res))
-app.delete('/api/user/:userId', async (req, res) => await userController.deleteUser(req, res))
+app.get('/api/user/', async (req, res) => await userController.returnUser(req, res))
+app.put('/api/user/', async (req, res) => await userController.updateUser(req, res))
+app.delete('/api/user/', async (req, res) => await userController.deleteUser(req, res))
 
 app.get('/api/user/data', async (req, res) => await userController.userData(req, res))
 app.get('/api/artist/index', async (req, res) => await artistController.returnArtistsIndex(req, res))

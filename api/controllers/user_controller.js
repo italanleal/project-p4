@@ -8,6 +8,7 @@ export class UserController {
         this.artistService = artistService;
     }
     async createUser(req, res) {
+        
         const newUser = createUser(req.body.userId, req.body.displayName, req.body.profileImageUrl, req.body.biography)
 
         try {
@@ -21,9 +22,14 @@ export class UserController {
     }
 
     async deleteUser(req, res) {
+        const access_token = req.headers.authorization.split(' ')[1]
+        if (!access_token) return res.status(401).json({ message: 'Token de acesso não fornecido.' })
+        try {
+            const user_data = await (await fetch('https://api.spotify.com/v1/me', {
+                headers: { Authorization: `Bearer ${access_token}` },
+            })).json()
 
-        const userId = req.params.userId
-
+        const userId = user_data.id
         if(!userId){
             return res.status(400).json({ error: 'userId é obrigatório.' });
         }
@@ -34,34 +40,50 @@ export class UserController {
             res.status(500).json({ error: error.message })
             return
         }
+    }catch (error) {
+            res.status(500).json({ error: error.message })
+        }
     }
 
     async updateUser(req,res){
-        const userId = req.params.userId;
+        const access_token = req.headers.authorization.split(' ')[1]
         const update = req.body;
+        if (!access_token) return res.status(401).json({ message: 'Token de acesso não fornecido.' })
+        try {
+        const user_data = await (await fetch('https://api.spotify.com/v1/me', {
+            headers: { Authorization: `Bearer ${access_token}` },
+        })).json();
 
-        if(!userId){
-            return res.status(400).json({ error: 'userId é obrigatório na URL.' });
-
-    }
-    try{
-       const updatedUser= await this.userService.updateUser(userId, update);
-       return res.status(200).json(updatedUser)
-        
-    }catch (error) {
-            return res.status(409).json({ error: error.message })
-            
-        }
-        
-    }
-
-    async returnUser(req, res) {
-        const userId = req.params.userId;
+        const userId = user_data.id;
 
         if (!userId) {
-            return res.status(400).json({ error: 'userId é obrigatório na URL.' });
+            return res.status(400).json({ error: 'userId é obrigatório.' });
         }
 
+        try {
+            const updatedUser = await this.userService.updateUser(userId, update);
+            return res.status(200).json(updatedUser);
+        } catch (error) {
+            return res.status(409).json({ error: error.message });
+        }
+
+    } catch (error) {
+        return res.status(500).json({ error: 'Erro ao buscar dados do Spotify.' });
+    }
+}
+
+    async returnUser(req, res) {
+        const access_token = req.headers.authorization.split(' ')[1]
+        if (!access_token) return res.status(401).json({ message: 'Token de acesso não fornecido.' })
+        try {
+            const user_data = await (await fetch('https://api.spotify.com/v1/me', {
+                headers: { Authorization: `Bearer ${access_token}` },
+            })).json()
+
+        const userId = user_data.id
+        if(!userId){
+            return res.status(400).json({ error: 'userId é obrigatório.' });
+        }
         try {
             const user = await this.userService.returnUser(userId);
 
@@ -74,6 +96,10 @@ export class UserController {
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
+        } catch (error) {
+                res.status(500).json({ error: error.message })
+            } 
+    
     }
 
 
