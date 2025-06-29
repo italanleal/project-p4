@@ -35,6 +35,10 @@ app.get('/api/user/', async (req, res) => await userController.returnUser(req, r
 app.put('/api/user/', async (req, res) => await userController.updateUser(req, res))
 app.delete('/api/user/', async (req, res) => await userController.deleteUser(req, res))
 
+app.get('/api/user/artists', async (req, res) => await userController.returnArtistsByUser(req, res))
+app.get('/api/user/tracks', async (req, res) => await userController.returnTracksByUser(req, res))
+app.get('/api/user/artistsandtracks', async (req, res) => await userController.returnArtistsAndTracksByUser(req, res))
+
 app.get('/api/user/data', async (req, res) => await userController.userData(req, res))
 app.get('/api/artist/index', async (req, res) => await artistController.returnArtistsIndex(req, res))
 app.post('/api/network', async (req, res) => await artistController.renderNetwork(req, res))
