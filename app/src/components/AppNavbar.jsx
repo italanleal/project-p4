@@ -41,11 +41,11 @@ export default function AppNavbar({ onLogout, links = [], user }) {
                     <DropdownMenuTrigger asChild>
                         <Avatar className="cursor-pointer">
                             <AvatarImage
-                                src={user?.images?.[0]?.url}
-                                alt={user?.display_name}
+                                src={user.profileImageUrl}
+                                alt={user?.userDisplayName}
                             />
                             <AvatarFallback>
-                                {user?.display_name?.[0]?.toUpperCase() ?? "U"}
+                                {user?.userDisplayName?.[0]?.toUpperCase() ?? "U"}
                             </AvatarFallback>
                         </Avatar>
                     </DropdownMenuTrigger>

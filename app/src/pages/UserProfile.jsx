@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import AppNavbar from "@/components/AppNavbar.jsx";
 
 function UserProfile({ user, onLogout, onRefresh }) {
-    const [bio, setBio] = useState(user.bio || "");
+    const [bio, setBio] = useState(user.biography || "");
     const [editingBio, setEditingBio] = useState(false);
     const [interests, setInterests] = useState(user.interests || []);
     const genres = ["Pop", "Rock", "Hip-Hop", "Jazz", "Indie"];
@@ -38,17 +38,17 @@ function UserProfile({ user, onLogout, onRefresh }) {
                 onRefresh={onRefresh}
                 links={[
                     {label: "Rede", to: "/rede"},
-                    {label: "Dashboard", to: "/"},
+                    {label: "Dashboard", to: "/dashboard"},
                 ]}
             />
             <div className={"flex justify-start space-x-10"}>
                 <Card>
                     <CardHeader>
-                        <CardTitle>Perfil de {user.display_name}</CardTitle>
+                        <CardTitle>Perfil de {user.userDisplayName}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
                         <p><strong>Email:</strong> {user.email}</p>
-                        <p><strong>ID do Spotify:</strong> {user.id}</p>
+                        <p><strong>ID do Spotify:</strong> {user.userId}</p>
                         <p><strong>Top Artistas:</strong> {user.topArtists?.join(", ") || "Não disponível"}</p>
                         <p><strong>Top Faixas:</strong> {user.topTracks?.join(", ") || "Não disponível"}</p>
                     </CardContent>
