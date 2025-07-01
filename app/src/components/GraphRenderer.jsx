@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import {
     Alert, AlertDescription, AlertTitle
 } from "@/components/ui/alert";
+
 const vps = "http://46.202.144.162:3051"
 
 const filterOptions = [
@@ -15,6 +16,7 @@ const filterOptions = [
     { label: "/api/user/artistsandtracks", value: "genres", endpoint: vps+"/api/user/artistsandtracks" },
     // { label: "Faixas em comum", value: "tracks", endpoint: vps+"/api/graph/tracks" },
     // { label: "Resultado de pesquisa", value: "search", endpoint: vps+"/api/graph/search" },
+
 ];
 
 export default function GraphRenderer() {
@@ -36,6 +38,7 @@ export default function GraphRenderer() {
                 });
 
                 if (!response.ok) console.error("Erro ao buscar o grafo: " + response.statusText);
+
 
                 const raw = await response.json();
 
@@ -117,6 +120,7 @@ export default function GraphRenderer() {
                             }
                         });
                     }
+
                 }
 
                 setElements([...nodeMap.values(), ...edgeMap.values()]);
@@ -167,6 +171,7 @@ export default function GraphRenderer() {
             ) : (
                 <CytoscapeComponent
                     elements={elements}
+
                     style={{ width: '100%', height: '90vh', border: '1px solid #ccc' }}
                     layout={{
                         name: 'cose',
@@ -179,6 +184,7 @@ export default function GraphRenderer() {
                         numIter: 1000,
                         animate: true
                     }}
+
                     stylesheet={[
                         {
                             selector: 'node',

@@ -46,6 +46,7 @@ export default function AppNavbar({ onLogout, links = [], user }) {
                             />
                             <AvatarFallback>
                                 {user?.userDisplayName?.[0]?.toUpperCase() ?? "U"}
+
                             </AvatarFallback>
                         </Avatar>
                     </DropdownMenuTrigger>

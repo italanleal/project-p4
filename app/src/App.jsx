@@ -29,6 +29,7 @@ export default function App() {
         setUser(updated);
     };
 
+
     return (
         <UserProvider user={user} onLogout={onLogout} onRefresh={onRefresh}>
                 <Routes>
