@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "@/lib/utils"; // se estiver usando shadcn, você já deve ter o helper `cn` disponível
+import { cn } from "@/lib/utils";
 
 export function LoadingSpinner({ size = "md", className = "" }) {
     const sizeClasses = {

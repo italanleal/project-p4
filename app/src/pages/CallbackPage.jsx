@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useUser} from "@/context/UserProvider";
 
 const clientId = 'd1c4219dadaf49bebc3a5d962b1dcb20';
 const redirectUrl = 'http://127.0.0.1:8888/callback';
@@ -34,9 +35,9 @@ export const redirectToSpotifyAuthorize = async () => {
     window.location.href = `${authorizationEndpoint}?${params.toString()}`;
 };
 
-function CallbackPage({ onSetUser }) {
+function CallbackPage() {
     const navigate = useNavigate();
-    const [userData, setUserData] = useState(null);
+    const { login } = useUser();
 
     const currentToken = {
         get access_token() {
@@ -62,6 +63,10 @@ function CallbackPage({ onSetUser }) {
             localStorage.setItem('expires', expiry.toString());
         },
     };
+    function isTokenExpired() {
+        const expiry = new Date(localStorage.getItem('expires'));
+        return new Date() >= expiry;
+    }
 
     useEffect(() => {
         const args = new URLSearchParams(window.location.search);
@@ -70,11 +75,23 @@ function CallbackPage({ onSetUser }) {
         const  handleAuth = async () => {
             if (code) {
                 const token = await getToken(code);
+
+                if (token.error) {
+                    console.error("Erro ao obter token:", token);
+                    return;
+                }
+
+                console.log(token)
                 currentToken.save(token);
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
 
             if (currentToken.access_token) {
+                if (isTokenExpired()) {
+                    console.log("Token expirado. Redirecionando para autorização.");
+                    return redirectToSpotifyAuthorize();
+                }
+
                 const userData = await fetchUserData();
 
                 const res = await fetch("http://46.202.144.162:3051/api/user/", {
@@ -84,22 +101,18 @@ function CallbackPage({ onSetUser }) {
                     },
                 });
 
-
                 if (res.ok) {
                     const existingUser = await res.json();
-                    console.log(existingUser)
-                    onSetUser(existingUser);
-                    localStorage.setItem('user', JSON.stringify(existingUser));
+                    console.log(existingUser);
+                    login(existingUser);
                     navigate('/dashboard', { replace: true });
                 } else {
-                    onSetUser(userData);
-                    localStorage.setItem('user', JSON.stringify(userData));
-
+                    login(userData);
                     navigate('/edit', { replace: true });
                 }
 
             } else {
-                navigate('/', { replace: true });
+                redirectToSpotifyAuthorize()
             }
         };
 
@@ -125,13 +138,22 @@ function CallbackPage({ onSetUser }) {
     };
 
     const fetchUserData = async () => {
-        const response = await fetch('https://api.spotify.com/v1/me', {
-            headers: { Authorization: `Bearer ${currentToken.access_token}` },
-        });
-        const data = await response.json();
-        setUserData(data);
-        return data;
+        try {
+            const response = await fetch('https://api.spotify.com/v1/me', {
+                headers: { Authorization: `Bearer ${currentToken.access_token}` },
+            });
+
+            if (!response.ok) {
+                throw new Error("Erro ao buscar dados do usuário no Spotify");
+            }
+
+            return await response.json();
+        } catch (err) {
+            console.error(err);
+            redirectToSpotifyAuthorize();
+        }
     };
+
 
     return <p>Conectando com o Spotify...</p>;
 }
