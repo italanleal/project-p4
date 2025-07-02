@@ -1,0 +1,42 @@
+name: Deploy para Produção
+
+on:
+  push:
+    branches:
+      - main  # dispara o deploy ao dar push na main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Fazer checkout do código
+        uses: actions/checkout@v3
+
+      - name: Deploy via SSH na VPS
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: "46.202.144.162"
+          username: "root"
+          key: ${{ secrets.VPS_SSH_KEY }}
+
+          script: |
+            cd /root/code/app-deploy/
+            fuser -k 3051/tcp || true
+            rm -rf ./project-p4
+            
+            git clone https://github.com/italanleal/project-p4.git
+
+            cd /root/code/app-deploy/project-p4/api
+
+            touch ./.env
+            echo NEO4J_URI="${{ secrets.NEO4J_URI }}" >> ./.env
+            echo NEO4J_USERNAME="${{ secrets.NEO4J_USERNAME }}" >> ./.env
+            echo NEO4J_PASSWORD="${{ secrets.NEO4J_PASSWORD }}" >> ./.env
+            echo NEO4J_DATABASE="${{ secrets.NEO4J_DATABASE }}" >> ./.env
+            cat ./.env
+            
+            npm install
+            
+            nohup npm start > /dev/null 2>&1 &
+            exit 0
