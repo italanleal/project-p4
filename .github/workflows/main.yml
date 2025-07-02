@@ -45,5 +45,5 @@ jobs:
 
             npm install
             
-            nohup npm run dev -- --host > frontend.log 2>&1 &
+            nohup npm run build > frontend.log 2>&1 &
             exit 0
