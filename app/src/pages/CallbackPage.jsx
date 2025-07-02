@@ -154,7 +154,6 @@ function CallbackPage() {
         }
     };
 
-
     return <p>Conectando com o Spotify...</p>;
 }
 

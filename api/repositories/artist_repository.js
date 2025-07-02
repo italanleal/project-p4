@@ -100,7 +100,7 @@ export class ArtistRepository {
                     }
                     
                     WITH u, a, tracks_per_artist, user, avg_tracks_by_user
-                    WHERE u = user AND tracks_per_artist > avg_tracks_by_user
+                    WHERE u = user AND tracks_per_artist > avg_tracks_by_user + 2
                     MATCH (u)-[:LISTEN_TO]->(t:Track)<-[:AUTHORS]-(a)
                     RETURN DISTINCT u AS user, t, a
                 }
