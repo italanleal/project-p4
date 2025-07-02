@@ -22,11 +22,11 @@ function AppRoutes() {
 
     return (
         <Routes>
-            <Route path="/home" element={<HomePage />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/consent" element={<Consent />} />
             <Route path="/edit" element={<EditProfile user={user} />} />
             <Route path="/network" element={<Network user={user} onLogout={logout} onLogoutFull={logoutFull} onRefresh={refresh} />} />
-            <Route path="/" element={<CallbackPage />} />
+            <Route path="/callback" element={<CallbackPage />} />
             <Route path="/profile" element={<UserProfile user={user} onLogout={logout} onRefresh={refresh} />} />
             <Route path="/dashboard" element={<Dashboard user={user} onLogout={logout} onLogoutFull={logoutFull} onRefresh={refresh} />} />
             <Route path="*" element={<Navigate to="/" />} />
