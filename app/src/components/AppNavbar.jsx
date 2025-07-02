@@ -6,10 +6,13 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {Separator} from "@/components/ui/separator.jsx";
+import {useLogoutAndRedirect} from "@/hooks/useLogoutAndRedirect.js";
 
-export default function AppNavbar({ onLogout, links = [], user }) {
+export default function AppNavbar({ links = [], user }) {
     const location = useLocation();
     const navigate = useNavigate();
+    const { handleLogout, handleLogoutFull } = useLogoutAndRedirect();
 
     return (
         <nav
@@ -41,11 +44,12 @@ export default function AppNavbar({ onLogout, links = [], user }) {
                     <DropdownMenuTrigger asChild>
                         <Avatar className="cursor-pointer">
                             <AvatarImage
-                                src={user?.images?.[0]?.url}
-                                alt={user?.display_name}
+                                src={user.profileImageUrl ?? ""}
+                                alt={user?.userDisplayName ?? "User Avatar"}
                             />
                             <AvatarFallback>
-                                {user?.display_name?.[0]?.toUpperCase() ?? "U"}
+                                {user?.userDisplayName?.[0]?.toUpperCase() ?? "U"}
+
                             </AvatarFallback>
                         </Avatar>
                     </DropdownMenuTrigger>
@@ -53,8 +57,12 @@ export default function AppNavbar({ onLogout, links = [], user }) {
                         <DropdownMenuItem onClick={() => navigate("/profile")}>
                             Ver Perfil
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={onLogout}>
+                        <Separator/>
+                        <DropdownMenuItem onClick={handleLogout}>
                             Sair
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleLogoutFull}>
+                            Sair e pedir novo acesso
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
