@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import {useUser} from "@/context/UserProvider";
 
 const clientId = 'd1c4219dadaf49bebc3a5d962b1dcb20';
-const redirectUrl = 'https://project-p4.vercel.app/';
+const redirectUrl = 'https://project-p4.vercel.app/callback';
 const authorizationEndpoint = 'https://accounts.spotify.com/authorize';
 const tokenEndpoint = 'https://accounts.spotify.com/api/token';
 const scope = 'user-read-private user-read-email user-top-read';
