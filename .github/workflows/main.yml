@@ -23,6 +23,7 @@ jobs:
           script: |
             cd /root/code/app-deploy/
             fuser -k 3051/tcp || true
+            fuser -k 8888/tcp || true
             rm -rf ./project-p4
             
             git clone https://github.com/italanleal/project-p4.git
@@ -39,4 +40,10 @@ jobs:
             npm install
             
             nohup npm start > /dev/null 2>&1 &
+            
+            cd /root/code/app-deploy/project-p4/app
+
+            npm install
+            
+            nohup npm run dev -- --host > frontend.log 2>&1 &
             exit 0
