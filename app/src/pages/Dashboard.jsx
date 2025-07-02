@@ -1,3 +1,4 @@
+// src/pages/Dashboard.jsx
 import AppNavbar from "@/components/AppNavbar";
 import GraphRenderer from "@/components/GraphRenderer";
 

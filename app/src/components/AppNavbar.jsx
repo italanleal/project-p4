@@ -49,6 +49,7 @@ export default function AppNavbar({ links = [], user }) {
                             />
                             <AvatarFallback>
                                 {user?.userDisplayName?.[0]?.toUpperCase() ?? "U"}
+
                             </AvatarFallback>
                         </Avatar>
                     </DropdownMenuTrigger>

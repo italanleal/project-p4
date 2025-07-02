@@ -19,6 +19,7 @@ function AppRoutes() {
         return <LoadingSpinner/>;
     }
 
+
     return (
         <Routes>
             <Route path="/" element={<HomePage />} />
