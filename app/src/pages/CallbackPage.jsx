@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import {useUser} from "@/context/UserProvider";
 
 const clientId = 'd1c4219dadaf49bebc3a5d962b1dcb20';
-const redirectUrl = 'https://www.conectify.atendai.tech';
+const redirectUrl = 'https://www.conectify.atendai.tech/';
 const authorizationEndpoint = 'https://accounts.spotify.com/authorize';
 const tokenEndpoint = 'https://accounts.spotify.com/api/token';
 const scope = 'user-read-private user-read-email user-top-read';
