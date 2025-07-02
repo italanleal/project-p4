@@ -45,6 +45,6 @@ jobs:
 
             npm install
             npm run build
-            nohup npm run preview 2>&1 &
+            nohup npm run preview > /dev/null 2>&1 &
 
             exit 0
