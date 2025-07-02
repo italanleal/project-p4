@@ -14,7 +14,7 @@ export const redirectToSpotifyAuthorize = async () => {
     const code_verifier = randomValues.reduce((acc, x) => acc + possible[x % possible.length], '');
 
     const data = new TextEncoder().encode(code_verifier);
-    const hashed = await crypto.subtle.digest('SHA-256', data);
+    const hashed = await window.crypto.subtle.digest('SHA-256', data);
 
     const code_challenge = btoa(String.fromCharCode(...new Uint8Array(hashed)))
         .replace(/=/g, '')
