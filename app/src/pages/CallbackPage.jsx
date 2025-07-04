@@ -1,6 +1,9 @@
 import React, {useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useUser} from "@/context/UserProvider";
+import FancyBackground from "@/components/FancyGround.jsx";
+import {LoadingSpinner} from "@/components/LoadingSpinner.jsx";
+const vps = "https://b26cc315-7b34-4312-ae43-ac6761795181.vercel.app"
 
 const clientId = 'd1c4219dadaf49bebc3a5d962b1dcb20';
 
@@ -95,7 +98,7 @@ function CallbackPage() {
 
                 const userData = await fetchUserData();
 
-                const res = await fetch("http://46.202.144.162:3051/api/user/", {
+                const res = await fetch(vps+"/api/user/", {
                     method: "GET",
                     headers: {
                         Authorization: `Bearer ${currentToken.access_token}`,
@@ -155,7 +158,11 @@ function CallbackPage() {
         }
     };
 
-    return <p>Conectando com o Spotify...</p>;
+    return (
+        <FancyBackground>
+            <LoadingSpinner text="Conectando com o Spotify..." size="md" />
+        </FancyBackground>
+    );
 }
 
 export default CallbackPage;

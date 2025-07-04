@@ -1,7 +1,6 @@
-// src/lib/graphFetchers.js
-
+const vps = "https://b26cc315-7b34-4312-ae43-ac6761795181.vercel.app";
 export async function fetchNetworkGraphData({ setElements, setError, setLoading }) {
-    const vps = "http://46.202.144.162:3051";
+
     const filterOptions = [
         { label: "Artists/index", value: "tracks", endpoint: `${vps}/api/artist/index` },
         { label: "Artists/:id", value: "artists/:id", endpoint: `${vps}/api/network` },
@@ -41,6 +40,7 @@ export async function fetchNetworkGraphData({ setElements, setError, setLoading 
             nodeMap.set(user.elementId, {
                 data: {
                     id: user.elementId,
+                    userId: user.properties?.userId,
                     label: user.properties?.userDisplayName,
                     type: "User",
                     image: user.properties?.profileImageUrl?.trim() || null,
@@ -96,7 +96,6 @@ export async function fetchNetworkGraphData({ setElements, setError, setLoading 
 }
 
 export async function fetchDashboardGraphData({ setElements, setError, setLoading, tracksChecked, artistsChecked }) {
-    const vps = "http://46.202.144.162:3051";
     setLoading(true);
     setError(null);
 
@@ -136,6 +135,7 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                 nodeMap.set(userId, {
                     data: {
                         id: userId,
+                        userId: user.properties?.userId,
                         label: user.displayName || "Você",
                         type: "User",
                         image: user.profileImageUrl || null,
@@ -169,6 +169,7 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                 nodeMap.set(user.elementId, {
                     data: {
                         id: user.elementId,
+                        userId: user.properties?.userId,
                         label: user.properties?.userDisplayName,
                         type: "User",
                         image: user.properties?.profileImageUrl?.trim() || null
@@ -201,6 +202,7 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                 nodeMap.set(user.elementId, {
                     data: {
                         id: user.elementId,
+                        userId: user.properties?.userId,
                         label: user.properties?.userDisplayName,
                         type: "User",
                         image: user.properties?.profileImageUrl?.trim() || null

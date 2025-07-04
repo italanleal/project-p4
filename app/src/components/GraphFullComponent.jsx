@@ -7,6 +7,8 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/
 import React, {useRef} from "react";
 import {useGraphSelection} from "@/hooks/useGraphSelection.jsx";
 import { Badge } from "@/components/ui/badge.jsx";
+import {LoadingSpinner} from "@/components/LoadingSpinner.jsx";
+import {useUser} from "@/context/UserProvider.jsx";
 
 export default function GraphFullComponent({elements,
                                   tracksChecked, setTracksChecked,
@@ -24,6 +26,7 @@ export default function GraphFullComponent({elements,
         handleNodeDoubleClick,
         clearHighlights,
     } = useGraphSelection(cyRef, setSelectedTrackId);
+    const {user} = useUser()
     return (
         <div className="min-h-screen flex flex-col shadow-md bg-card px-4">
 
@@ -82,9 +85,10 @@ export default function GraphFullComponent({elements,
                 )}
 
                 {loading ? (
-                    <div className="text-center text-muted-foreground">Carregando grafo...</div>
+                    <LoadingSpinner size={"lg"} text={"Carregando Grafo"}/>
                 ) : (
                     <GraphDisplay
+                        user={user}
                         elements={elements}
                         cyRef={cyRef}
                         handleNodeClick={handleNodeClick}
