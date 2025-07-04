@@ -1,6 +1,6 @@
-// src/pages/Dashboard.jsx
 import AppNavbar from "@/components/AppNavbar";
-import GraphRenderer from "@/components/GraphRenderer";
+import PersonalGraphRenderer from "@/components/PersonalGraphRenderer.jsx";
+import React from "react";
 
 export default function Dashboard({ user, onLogout, onLogoutFull, onRefresh }) {
 
@@ -11,14 +11,11 @@ export default function Dashboard({ user, onLogout, onLogoutFull, onRefresh }) {
                 onLogout={onLogout}
                 onRefresh={onRefresh}
                 onLogoutFull={onLogoutFull}
-                links={[
-                    { label: "Rede", to: "/network" },
-                    { label: "Dashboard", to: "/dashboard" },
-                ]}
+                links={[{ label: "Rede", to: "/network" }, { label: "Dashboard", to: "/dashboard" }]}
             />
 
             <div className="flex-1 p-4">
-                <GraphRenderer/>
+                <PersonalGraphRenderer user={user} onLogout={onLogout} onRefresh={onRefresh} onLogoutFull={onLogoutFull} />
             </div>
         </div>
     );

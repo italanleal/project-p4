@@ -49,7 +49,7 @@ export default function HomePage() {
                     onClick={handleConsentRedirect}
                     className="px-8 py-4 text-lg font-semibold rounded-2xl shadow-lg bg-primary hover:bg-primary/90"
                 >
-                    Log in with Spotify
+                    Log in for the first time with Spotify
                 </Button>
 
                 <Button
@@ -60,6 +60,7 @@ export default function HomePage() {
                     I already have an account
                 </Button>
             </div>
+
         </div>
     );
 }
