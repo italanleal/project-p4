@@ -64,17 +64,19 @@ export default function EditProfile({ user }) {
             });
 
             const existingUser = await res.json();
-            console.log(existingUser);
-            login(existingUser);
-            toast.success("Perfil criado com sucesso!");
-            navigate("/dashboard");
+
+
         } catch (error) {
             console.error("Erro ao criar perfil:", error);
             toast.error("Erro ao criar perfil", {
                 description: "Tente novamente mais tarde.",
             });
         } finally {
+            login(existingUser);
+            toast.success("Perfil criado com sucesso!");
             setIsLoading(false);
+            navigate("/dashboard");
+            
         }
     };
 
