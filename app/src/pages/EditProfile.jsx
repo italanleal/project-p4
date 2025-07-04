@@ -64,7 +64,7 @@ export default function EditProfile({ user }) {
             });
 
             const existingUser = await res.json();
-
+            login(existingUser);
 
         } catch (error) {
             console.error("Erro ao criar perfil:", error);
@@ -72,7 +72,6 @@ export default function EditProfile({ user }) {
                 description: "Tente novamente mais tarde.",
             });
         } finally {
-            login(existingUser);
             toast.success("Perfil criado com sucesso!");
             setIsLoading(false);
             navigate("/dashboard");
