@@ -30,6 +30,9 @@ const userRepository = createUserRepository(conn);
 const userService = createUserService(userRepository);
 const userController = createUserController(userService, trackService, artistService);
 
+app.get("/", (req, res) => res.send("Express on Vercel"));
+
+
 app.post('/api/user', async (req, res) => await userController.createUser(req, res))
 app.get('/api/user/', async (req, res) => await userController.returnUser(req, res))
 app.put('/api/user/', async (req, res) => await userController.updateUser(req, res))
