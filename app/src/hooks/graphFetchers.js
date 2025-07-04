@@ -41,6 +41,7 @@ export async function fetchNetworkGraphData({ setElements, setError, setLoading 
                 data: {
                     id: user.elementId,
                     userId: user.properties?.userId,
+                    userBio: user.properties?.biography,
                     label: user.properties?.userDisplayName,
                     type: "User",
                     image: user.properties?.profileImageUrl?.trim() || null,
@@ -136,6 +137,7 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                     data: {
                         id: userId,
                         userId: user.properties?.userId,
+                        userBio: user.properties?.biography,
                         label: user.displayName || "Você",
                         type: "User",
                         image: user.profileImageUrl || null,
@@ -170,6 +172,7 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                     data: {
                         id: user.elementId,
                         userId: user.properties?.userId,
+                        userBio: user.properties?.biography,
                         label: user.properties?.userDisplayName,
                         type: "User",
                         image: user.properties?.profileImageUrl?.trim() || null
@@ -203,6 +206,7 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                     data: {
                         id: user.elementId,
                         userId: user.properties?.userId,
+                        userBio: user.properties?.biography,
                         label: user.properties?.userDisplayName,
                         type: "User",
                         image: user.properties?.profileImageUrl?.trim() || null

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import FancyBackground from "@/components/FancyGround.jsx";
+import {useUser} from "@/context/UserProvider.jsx";
 
 export default function EditProfile({ user }) {
     const [displayName, setDisplayName] = useState(user?.display_name || "");
@@ -16,6 +17,7 @@ export default function EditProfile({ user }) {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const vps = "https://b26cc315-7b34-4312-ae43-ac6761795181.vercel.app";
+    const { login } = useUser();
     const handleSubmit = async () => {
         if (!user?.id) return;
 
@@ -47,13 +49,23 @@ export default function EditProfile({ user }) {
                 console.error("Erro desconhecido ao criar usuário.");
             }
 
-            await fetch(vps+"/api/user/data", {
+            fetch(vps+"/api/user/data", {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('access_token')}`,
                 },
             });
 
+            const res = await fetch(vps+"/api/user/", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+                },
+            });
+
+            const existingUser = await res.json();
+            console.log(existingUser);
+            login(existingUser);
             toast.success("Perfil criado com sucesso!");
             navigate("/dashboard");
         } catch (error) {
