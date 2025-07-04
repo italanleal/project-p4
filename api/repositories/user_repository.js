@@ -92,6 +92,72 @@ export class UserRepository {
         }
     }
 
+    async returnArtistsByUser(id) {
+        const session = this.conn.getSession();
+
+        try {
+            const result = await session.run(
+                 `
+            MATCH (u:User {userId: $userId})-[:LISTEN_TO]->(t:Track)<-[:AUTHORS]-(a:Artist)
+            RETURN DISTINCT a
+            `,
+                { userId: id }
+            );
+
+            if (result.records.length === 0) {
+                return null;
+            }
+
+            return result.records;
+        } finally {
+            await session.close();
+        }
+    }
+
+    async returnTracksByUser(id) {
+        const session = this.conn.getSession();
+
+        try {
+            const result = await session.run(
+                 `
+            MATCH (u:User {userId: $userId})-[r:LISTEN_TO]->(t:Track)
+            RETURN u, r, t
+            `,
+                { userId: id }
+            );
+
+            if (result.records.length === 0) {
+                return null;
+            }
+
+            return result.records;
+        } finally {
+            await session.close();
+        }
+    }
+
+    async returnArtistsAndTracksByUser(id) {
+        const session = this.conn.getSession();
+
+        try {
+            const result = await session.run(
+                 `
+      MATCH (u:User {userId: $userId})-[r1:LISTEN_TO]->(t:Track)<-[r2:AUTHORS]-(a:Artist)
+      RETURN u, r1, t, r2, a
+      `,
+                { userId: id }
+            );
+
+            if (result.records.length === 0) {
+                return null;
+            }
+
+            return result.records;
+        } finally {
+            await session.close();
+        }
+    }
+
     async userListenToTrack(userId, trackId) {
         const session = this.conn.getSession();
         try {
