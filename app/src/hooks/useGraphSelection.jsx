@@ -1,6 +1,6 @@
-import {useState} from "react";
+import { useState } from "react";
 
-export function useGraphSelection(cyRef) {
+export function useGraphSelection(cyRef, setSelectedTrackId) {
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [selectedArtist, setSelectedArtist] = useState(null);
 
@@ -15,38 +15,52 @@ export function useGraphSelection(cyRef) {
         setSelectedArtist(null);
     };
 
-    /* -------- Destacar faixas em comum entre dois usuários -------- */
-    const highlightCommonTracks = (user1Id, user2Id) => {
+    /* -------- Destacar faixas em comum entre usuários selecionados -------- */
+    const highlightCommonTracks = (userIds) => {
         const cy = cyRef.current;
-        if (!cy) return;
+        if (!cy || userIds.length === 0) return;
 
-        cy.elements().addClass("faded");
+        // Apaga tudo
+        cy.elements().removeClass("selected-user highlighted").addClass("faded");
 
-        [user1Id, user2Id].forEach((id) =>
-            cy.getElementById(id).removeClass("faded").addClass("selected-user")
-        );
+        // Destaca os usuários selecionados
+        userIds.forEach((id) => {
+            cy.getElementById(id).removeClass("faded").addClass("selected-user");
+        });
 
-        const getTracks = (userId) =>
-            cy
-                .getElementById(userId)
-                .connectedEdges()
-                .targets()
-                .filter((el) => el.data("type") === "Track");
+        // Obtém todos os nós de faixa conectados a cada usuário
+        const trackSets = userIds.map((userId) => {
+            return new Set(
+                cy.getElementById(userId)
+                    .connectedEdges()
+                    .targets()
+                    .filter(node => node.data("type") === "Track")
+                    .map(node => node.id())
+            );
+        });
 
-        const commonTracks = getTracks(user1Id).filter((t1) =>
-            getTracks(user2Id).some((t2) => t2.id() === t1.id())
-        );
-
-        if (commonTracks.length === 0) {
-            return;
+        // Calcula a interseção entre os conjuntos
+        let commonTrackIds = [];
+        if (trackSets.length > 0) {
+            commonTrackIds = Array.from(trackSets.reduce((acc, set) => {
+                return new Set([...acc].filter(x => set.has(x)));
+            }));
         }
 
-        commonTracks.forEach((track) => {
+        // Destaca as faixas em comum e suas conexões
+        commonTrackIds.forEach((trackId) => {
+            const track = cy.getElementById(trackId);
             track.removeClass("faded").addClass("highlighted");
-            track.connectedEdges().removeClass("faded").addClass("highlighted");
-            track.connectedEdges().sources().removeClass("faded").addClass("highlighted");
+
+            track.connectedEdges().forEach(edge => {
+                edge.removeClass("faded").addClass("highlighted");
+
+                const source = edge.source();
+                source.removeClass("faded").addClass("highlighted");
+            });
         });
     };
+
 
     /* -------- Destacar todas as faixas de um artista -------- */
     const highlightArtistTracks = (artistId) => {
@@ -63,9 +77,7 @@ export function useGraphSelection(cyRef) {
             .targets()
             .filter((el) => el.data("type") === "Track");
 
-        if (tracks.length === 0) {
-            return;
-        }
+        if (tracks.length === 0) return;
 
         tracks.forEach((track) => {
             track.removeClass("faded").addClass("highlighted");
@@ -76,46 +88,67 @@ export function useGraphSelection(cyRef) {
     /* -------- Lógica de clique em usuário -------- */
     const handleUserClick = (node) => {
         const id = node.id();
+        const alreadySelected = selectedUsers.includes(id);
 
-        if (selectedUsers.includes(id)) {
+        let newSelectedUsers;
+
+        if (alreadySelected) {
+            // Remove o usuário da seleção
+            newSelectedUsers = selectedUsers.filter(x => x !== id);
+        } else {
+            newSelectedUsers = [...selectedUsers, id];
+        }
+
+        setSelectedUsers(newSelectedUsers);
+
+        if (newSelectedUsers.length === 0) {
             clearHighlights();
             return;
         }
 
-        if (selectedUsers.length === 0) {
-            clearHighlights(true);
-            node.addClass("selected-user");
-            setSelectedUsers([id]);
+        if (newSelectedUsers.length === 1) {
+            // Quando só um usuário selecionado, destaca só ele sem todas as músicas
+            const cy = cyRef.current;
+            if (!cy) return;
+
+            cy.elements().removeClass("selected-user highlighted").addClass("faded");
+
+            // Destaca só o usuário
+            const userNode = cy.getElementById(newSelectedUsers[0]);
+            userNode.removeClass("faded").addClass("selected-user");
+
+            // Remove destaque das músicas, ou destaca só as que quiser, aqui vou deixar sem destaque
             return;
         }
 
-        if (selectedUsers.length === 1) {
-            const [firstId] = selectedUsers;
-            node.addClass("selected-user");
-            setSelectedUsers([firstId, id]);
-            highlightCommonTracks(firstId, id);
-            return;
-        }
-
-        clearHighlights();
-        node.addClass("selected-user");
-        setSelectedUsers([id]);
+        // Se tiver mais de 1 usuário selecionado, destaca músicas em comum
+        highlightCommonTracks(newSelectedUsers);
     };
+
 
     /* -------- Lógica de clique em artista -------- */
     const handleArtistClick = (node) => {
         const id = node.id();
 
         if (selectedArtist === id) {
-            clearHighlights(true);
-            setSelectedArtist(null);
+            clearHighlights();
             return;
         }
 
-        clearHighlights(true);
+        clearHighlights();
         node.addClass("selected-artist");
         setSelectedArtist(id);
         highlightArtistTracks(id);
+    };
+
+    /* -------- Lógica de clique em track -------- */
+    const handleTrackClick = (node) => {
+        // Por enquanto não faz nada
+    };
+
+    const handleTrackDoubleClick = (node) => {
+        const trackId = node.data("trackId");
+        if (trackId) setSelectedTrackId(trackId);
     };
 
     /* -------- Função despachadora para qualquer nó -------- */
@@ -127,10 +160,18 @@ export function useGraphSelection(cyRef) {
         if (type === "Artist") return handleArtistClick(node);
     };
 
+    const handleNodeDoubleClick = (event) => {
+        const node = event.target;
+        const type = node.data("type");
+
+        if (type === "Track") return handleTrackDoubleClick(node);
+    };
+
     return {
         selectedUsers,
         selectedArtist,
         handleNodeClick,
+        handleNodeDoubleClick,
         clearHighlights,
     };
 }
