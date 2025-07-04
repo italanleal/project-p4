@@ -18,7 +18,7 @@ export default function AppNavbar({ links = [], user }) {
         <nav
             className="bg-background text-foreground border-b border-border px-4 py-2 flex justify-between items-center">
             <div className="flex items-center gap-2">
-                <img src="public/icons/favicon-32x32.png" alt="Logo Connectify" className="h-8 w-8"/>
+                <img src="/icons/favicon-32x32.png" alt="Logo Connectify" className="h-8 w-8"/>
                 <span className="text-2xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-300 text-transparent bg-clip-text">
                     Connectify
                 </span>

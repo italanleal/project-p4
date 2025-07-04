@@ -12,66 +12,28 @@ export default function GraphDisplay({
         <CytoscapeComponent
             cy={(cy) => {
                 cyRef.current = cy;
-
-                /* ---------- DETECÇÃO DE TAP ÚNICO / DUPLO ---------- */
-                const DOUBLE_TAP_DELAY = 300;          // ms
-                let lastTapTime = 0;                   // timestamp do toque anterior
-                let lastTapNodeId = null;              // id do nó que recebeu o toque
-                let singleTapTimeout = null;           // timer para diferenciar click x dbl‑click
-
-                cy.on("tap", "node", (e) => {
-                    const now = Date.now();
-                    const node = e.target;
-
-                    const isSameNode = node.id() === lastTapNodeId;
-                    const isFastEnough = now - lastTapTime < DOUBLE_TAP_DELAY;
-
-                    if (isSameNode && isFastEnough) {
-                        // É um double‑tap no MESMO nó
-                        clearTimeout(singleTapTimeout);      // cancela o clique simples pendente
-                        singleTapTimeout = null;
-
-                        // reseta marcadores
-                        lastTapTime = 0;
-                        lastTapNodeId = null;
-
-                        handleDoubleClick(e);               // chama o handler de duplo clique
-                    } else {
-                        // Trata como primeiro toque (potencial clique simples)
-                        lastTapTime = now;
-                        lastTapNodeId = node.id();
-
-                        // agenda o clique simples; será cancelado se vier o 2º toque rápido
-                        singleTapTimeout = setTimeout(() => {
-                            handleNodeClick(e);
-                            singleTapTimeout = null;
-                            lastTapNodeId = null;
-                        }, DOUBLE_TAP_DELAY);
-                    }
-                });
-
-
-                /* ---------- CENTRALIZA O NÓ DO PRÓPRIO USUÁRIO AO FIM DO LAYOUT ---------- */
+                cy.on("tap", "node", handleNodeClick);
+                cy.on("dbltap", "node", handleDoubleClick);
                 cy.on("layoutstop", () => {
                     const userId = user.userId;
 
-                    const userNode = cy
-                        .nodes()
-                        .filter(
-                            (n) => n.data("type") === "User" && n.data("userId") === userId
-                        );
+                    const userNode = cy.nodes().filter(
+                        (n) => n.data("type") === "User" && n.data("userId") === userId
+                    );
 
                     if (userNode.nonempty()) {
                         cy.animate({
                             center: { eles: userNode },
                             zoom: 1.5,
                             duration: 600,
-                            easing: "ease-in",
+                            easing: "ease-in", // ou "ease-in-out", "ease-out", "linear"
                         });
                     } else {
                         console.warn("Nó do usuário não encontrado.");
                     }
                 });
+
+
             }}
             elements={elements}
             style={{
@@ -81,7 +43,7 @@ export default function GraphDisplay({
                 borderBottomRightRadius: "1rem",
                 border: "1px solid var(--color-border)",
                 borderTop: "none",
-                background: "var(--color-card)",
+                background: "var(--color-card)"
             }}
             layout={{
                 name: "cose",
@@ -95,7 +57,7 @@ export default function GraphDisplay({
             }}
             stylesheet={[
                 {
-                    selector: ".first-selected-user",
+                    selector: "first-selected-user",
                     style: {
                         "border-color": "gold",
                         "border-width": "4px"

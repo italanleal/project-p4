@@ -3,19 +3,12 @@ import {Label} from "@/components/ui/label.jsx";
 import {Button} from "@/components/ui/button.jsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.jsx";
 import GraphDisplay from "@/components/GraphDisplay.jsx";
+import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog.jsx";
 import React, {useRef} from "react";
 import {useGraphSelection} from "@/hooks/useGraphSelection.jsx";
 import { Badge } from "@/components/ui/badge.jsx";
 import {LoadingSpinner} from "@/components/LoadingSpinner.jsx";
 import {useUser} from "@/context/UserProvider.jsx";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-    DialogFooter,
-} from "@/components/ui/dialog";
 
 export default function GraphFullComponent({elements,
                                   tracksChecked, setTracksChecked,
@@ -32,65 +25,10 @@ export default function GraphFullComponent({elements,
         handleNodeClick,
         handleNodeDoubleClick,
         clearHighlights,
-        userInfoModal,
-        setUserInfoModal,
     } = useGraphSelection(cyRef, setSelectedTrackId);
-
     const {user} = useUser()
     return (
         <div className="min-h-screen flex flex-col shadow-md bg-card px-4">
-
-            {userInfoModal && (
-                <Dialog open={true} onOpenChange={() => setUserInfoModal(null)}>
-                    <DialogContent
-                        className="w-auto max-w-[95vw] max-h-[90vh] overflow-auto bg-card shadow-xl border border-border rounded-2xl"
-                    >
-                        <DialogHeader>
-                            <DialogTitle>{userInfoModal.label}</DialogTitle>
-                            <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
-                                <DialogDescription className="whitespace-nowrap">
-                                    Usuário: <span
-                                    className="font-medium text-foreground">{userInfoModal.displayName}</span>
-                                </DialogDescription>
-                                <a
-                                    href={`https://open.spotify.com/user/${userInfoModal.userId}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-600 hover:text-blue-800 transition-colors duration-200"
-                                >
-                                    Ver perfil no Spotify
-                                </a>
-                            </div>
-
-
-                            {userInfoModal.image && (
-                                <img
-                                    src={userInfoModal.image}
-                                    alt="Foto do usuário"
-                                    className="w-20 h-20 rounded-full object-cover border"
-                                />
-                            )}
-                        </DialogHeader>
-
-                        <div className="flex items-center gap-4 mt-4 max-w-[90vw]">
-
-                            <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words max-w-[calc(90vw-6rem)]">
-                                {userInfoModal.biography || "Sem biografia cadastrada."}
-                            </p>
-                        </div>
-
-                        <DialogFooter>
-                            <button
-                                onClick={() => setUserInfoModal(null)}
-                                className="mt-4 bg-foreground text-background px-4 py-2 rounded hover:opacity-80"
-                            >
-                                Fechar
-                            </button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
-            )}
-
 
             <div className="flex flex-col">
                 <div className="flex items-center p-2 min-h-[48px] bg-muted/30 shadow-inner border rounded-t-lg">
@@ -150,9 +88,9 @@ export default function GraphFullComponent({elements,
                     <LoadingSpinner size={"lg"} text={"Carregando Grafo"}/>
                 ) : (
                     <GraphDisplay
-                        cyRef={cyRef}
                         user={user}
                         elements={elements}
+                        cyRef={cyRef}
                         handleNodeClick={handleNodeClick}
                         handleDoubleClick={handleNodeDoubleClick}
                     />
