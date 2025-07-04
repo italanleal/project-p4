@@ -6,7 +6,9 @@ import {LoadingSpinner} from "@/components/LoadingSpinner.jsx";
 const vps = "https://b26cc315-7b34-4312-ae43-ac6761795181.vercel.app"
 
 const clientId = 'd1c4219dadaf49bebc3a5d962b1dcb20';
+
 const redirectUrl = 'http://127.0.0.1:8888/callback';
+
 const authorizationEndpoint = 'https://accounts.spotify.com/authorize';
 const tokenEndpoint = 'https://accounts.spotify.com/api/token';
 const scope = 'user-read-private user-read-email user-top-read';
@@ -17,7 +19,7 @@ export const redirectToSpotifyAuthorize = async () => {
     const code_verifier = randomValues.reduce((acc, x) => acc + possible[x % possible.length], '');
 
     const data = new TextEncoder().encode(code_verifier);
-    const hashed = await crypto.subtle.digest('SHA-256', data);
+    const hashed = await window.crypto.subtle.digest('SHA-256', data);
 
     const code_challenge = btoa(String.fromCharCode(...new Uint8Array(hashed)))
         .replace(/=/g, '')
