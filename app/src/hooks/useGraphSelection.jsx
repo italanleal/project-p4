@@ -61,25 +61,39 @@ export function useGraphSelection(cyRef, setSelectedTrackId) {
     };
 
     /* -------- Destacar todas as faixas de um artista -------- */
-    const highlightArtistTracks = (artistId) => {
-        const cy = cyRef.current;
-        if (!cy) return;
-
-        cy.elements().addClass("faded");
-
-        const artistNode = cy.getElementById(artistId);
-        artistNode.removeClass("faded").addClass("selected-artist");
-
-        const tracks = artistNode
-            .connectedEdges()
-            .targets()
-            .filter((el) => el.data("type") === "Track");
-
-        tracks.forEach((track) => {
-            track.removeClass("faded").addClass("highlighted");
-            track.connectedEdges().removeClass("faded").addClass("highlighted");
-        });
-    };
+           const highlightArtistTracks = (artistId) => {
+            const cy = cyRef.current;
+            if (!cy) return;
+        
+            // Apaga tudo
+            cy.elements().addClass("faded");
+        
+            // Destaca o artista
+            const artistNode = cy.getElementById(artistId);
+            artistNode.removeClass("faded").addClass("selected-artist");
+        
+            // Pega faixas conectadas ao artista
+            const tracks = artistNode
+                .connectedEdges()
+                .targets()
+                .filter((el) => el.data("type") === "Track");
+        
+            // Destaca faixas e suas conexões
+            tracks.forEach((track) => {
+                track.removeClass("faded").addClass("highlighted");
+        
+                // Destaca as arestas ligadas à faixa
+                const edges = track.connectedEdges();
+                edges.removeClass("faded").addClass("highlighted");
+        
+                // Destaca os usuários conectados à faixa
+                edges.sources().forEach((sourceNode) => {
+                    if (sourceNode.data("type") === "User") {
+                        sourceNode.removeClass("faded").addClass("selected-user");
+                    }
+                });
+            });
+        };
 
     /* -------- Destacar todas as faixas de um ÚNICO usuário -------- */
     const highlightUserTracks = (userId) => {
