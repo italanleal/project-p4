@@ -19,65 +19,74 @@ export default function EditProfile({ user }) {
     const vps = "https://b26cc315-7b34-4312-ae43-ac6761795181.vercel.app";
     const { login } = useUser();
     const handleSubmit = async () => {
-        if (!user?.id) return;
-
-        if (!displayName.trim()) {
-            toast.error("Nome de exibição é obrigatório.");
-            return;
-        }
-
-        try {
-            setIsLoading(true); // ⬅️ Início do loading
-
-            const response = await fetch(vps+"/api/user", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    userId: user.id,
-                    displayName: displayName,
-                    profileImageUrl: user.images[0].url,
-                    biography: bio,
-                }),
-            });
-
-            if (response.status === 409) {
-                toast.error("Usuário já existe. Você não pode criar outro com o mesmo ID.");
+            if (!user?.id) return;
+        
+            if (!displayName.trim()) {
+                toast.error("Nome de exibição é obrigatório.");
                 return;
             }
-
-            if (!response.ok) {
-                console.error("Erro desconhecido ao criar usuário.");
+        
+            try {
+                setIsLoading(true);
+        
+                const response = await fetch(vps + "/api/user", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        userId: user.id,
+                        displayName: displayName,
+                        profileImageUrl: user.images[0].url,
+                        biography: bio,
+                    }),
+                });
+        
+                if (response.status === 409) {
+                    toast.error("Usuário já existe. Você não pode criar outro com o mesmo ID.");
+                    return;
+                }
+        
+                if (!response.ok) {
+                    console.error("Erro desconhecido ao criar usuário.");
+                    toast.error("Erro ao criar usuário.");
+                    return;
+                }
+        
+                // Aguarda a resposta da rota /api/user/data
+                const userDataResponse = await fetch(vps + "/api/user/data", {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    },
+                });
+        
+                if (!userDataResponse.ok) {
+                    throw new Error("Erro ao buscar dados do usuário.");
+                }
+        
+                // Busca os dados atualizados do usuário
+                const res = await fetch(vps + "/api/user/", {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    },
+                });
+        
+                const existingUser = await res.json();
+                login(existingUser);
+        
+                toast.success("Perfil criado com sucesso!");
+                navigate("/dashboard");
+        
+            } catch (error) {
+                console.error("Erro ao criar perfil:", error);
+                toast.error("Erro ao criar perfil", {
+                    description: "Tente novamente mais tarde.",
+                });
+            } finally {
+                setIsLoading(false);
             }
+        };
 
-            fetch(vps+"/api/user/data", {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-                },
-            });
-
-            const res = await fetch(vps+"/api/user/", {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-                },
-            });
-
-            const existingUser = await res.json();
-            login(existingUser);
-
-        } catch (error) {
-            console.error("Erro ao criar perfil:", error);
-            toast.error("Erro ao criar perfil", {
-                description: "Tente novamente mais tarde.",
-            });
-        } finally {
-            toast.success("Perfil criado com sucesso!");
-            setIsLoading(false);
-            navigate("/dashboard");
-            
-        }
-    };
 
 
     return (
