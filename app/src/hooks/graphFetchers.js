@@ -10,6 +10,13 @@ export async function fetchNetworkGraphData({ setElements, setError, setLoading 
     setError(null);
     try {
         const token = localStorage.getItem("access_token");
+            //atualiza a rede
+        fetch(vps+"/api/user/data", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
         const artistsResponse = await fetch(filterOptions[0].endpoint, {
             method: "GET",
