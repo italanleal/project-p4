@@ -2,6 +2,7 @@ import CytoscapeComponent from "react-cytoscapejs";
 import React from "react";
 
 export default function GraphDisplay({
+                                         user,
                                          elements,
                                          cyRef,
                                          handleNodeClick,
@@ -13,6 +14,26 @@ export default function GraphDisplay({
                 cyRef.current = cy;
                 cy.on("tap", "node", handleNodeClick);
                 cy.on("dbltap", "node", handleDoubleClick);
+                cy.on("layoutstop", () => {
+                    const userId = user.userId;
+
+                    const userNode = cy.nodes().filter(
+                        (n) => n.data("type") === "User" && n.data("userId") === userId
+                    );
+
+                    if (userNode.nonempty()) {
+                        cy.animate({
+                            center: { eles: userNode },
+                            zoom: 1.5,
+                            duration: 600,
+                            easing: "ease-in", // ou "ease-in-out", "ease-out", "linear"
+                        });
+                    } else {
+                        console.warn("Nó do usuário não encontrado.");
+                    }
+                });
+
+
             }}
             elements={elements}
             style={{

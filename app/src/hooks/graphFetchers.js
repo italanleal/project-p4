@@ -40,6 +40,7 @@ export async function fetchNetworkGraphData({ setElements, setError, setLoading 
             nodeMap.set(user.elementId, {
                 data: {
                     id: user.elementId,
+                    userId: user.properties?.userId,
                     label: user.properties?.userDisplayName,
                     type: "User",
                     image: user.properties?.profileImageUrl?.trim() || null,
@@ -134,6 +135,7 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                 nodeMap.set(userId, {
                     data: {
                         id: userId,
+                        userId: user.properties?.userId,
                         label: user.displayName || "Você",
                         type: "User",
                         image: user.profileImageUrl || null,
@@ -167,6 +169,7 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                 nodeMap.set(user.elementId, {
                     data: {
                         id: user.elementId,
+                        userId: user.properties?.userId,
                         label: user.properties?.userDisplayName,
                         type: "User",
                         image: user.properties?.profileImageUrl?.trim() || null
@@ -199,6 +202,7 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                 nodeMap.set(user.elementId, {
                     data: {
                         id: user.elementId,
+                        userId: user.properties?.userId,
                         label: user.properties?.userDisplayName,
                         type: "User",
                         image: user.properties?.profileImageUrl?.trim() || null
