@@ -201,7 +201,7 @@ function UserProfile({ user, onLogout, onRefresh }) {
                                 ) : (
                                     <>
                                         <p><strong>ID do Spotify:</strong> {user.userId}</p>
-                                        <p><strong>Biografia:</strong> {bio || "Sem biografia cadastrada."}</p>
+                                        <p><strong>Biografia:</strong><br> {bio || "Sem biografia cadastrada."}</p>
                                     </>
                                 )}
                             </CardContent>
