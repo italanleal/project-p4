@@ -17,10 +17,13 @@ export default function AppNavbar({ links = [], user }) {
     return (
         <nav
             className="bg-background text-foreground border-b border-border px-4 py-2 flex justify-between items-center">
-            {/* Esquerda: Logo */}
-            <span className="text-xl font-bold tracking-tight text-primary">
-        Connectify
-    </span>
+            <div className="flex items-center gap-2">
+                <img src="/icons/favicon-32x32.png" alt="Logo Connectify" className="h-8 w-8"/>
+                <span className="text-2xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-300 text-transparent bg-clip-text">
+                    Connectify
+                </span>
+            </div>
+
 
             {/* Direita: Links e usuário */}
             <div className="flex items-center gap-6">
@@ -57,7 +60,7 @@ export default function AppNavbar({ links = [], user }) {
                         <DropdownMenuItem onClick={() => navigate("/profile")}>
                             Ver Perfil
                         </DropdownMenuItem>
-                        <Separator/>
+                        <Separator className="m-1"/>
                         <DropdownMenuItem onClick={handleLogout}>
                             Sair
                         </DropdownMenuItem>

@@ -14,7 +14,7 @@ export default function Dashboard({ user, onLogout, onLogoutFull, onRefresh }) {
                 links={[{ label: "Rede", to: "/network" }, { label: "Dashboard", to: "/dashboard" }]}
             />
 
-            <div className="flex-1 p-4">
+            <div className="flex-1 pt-4">
                 <PersonalGraphRenderer user={user} onLogout={onLogout} onRefresh={onRefresh} onLogoutFull={onLogoutFull} />
             </div>
         </div>

@@ -8,13 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import FancyBackground from "@/components/FancyGround.jsx";
 
 export default function EditProfile({ user }) {
     const [displayName, setDisplayName] = useState(user?.display_name || "");
     const [bio, setBio] = useState("");
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
-
+    const vps = "https://b26cc315-7b34-4312-ae43-ac6761795181.vercel.app";
     const handleSubmit = async () => {
         if (!user?.id) return;
 
@@ -26,12 +27,12 @@ export default function EditProfile({ user }) {
         try {
             setIsLoading(true); // ⬅️ Início do loading
 
-            const response = await fetch("http://46.202.144.162:3051/api/user", {
+            const response = await fetch(vps+"/api/user", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     userId: user.id,
-                    displayName,
+                    displayName: displayName,
                     profileImageUrl: user.images[0].url,
                     biography: bio,
                 }),
@@ -46,7 +47,7 @@ export default function EditProfile({ user }) {
                 console.error("Erro desconhecido ao criar usuário.");
             }
 
-            await fetch("http://46.202.144.162:3051/api/user/data", {
+            await fetch(vps+"/api/user/data", {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('access_token')}`,
@@ -67,71 +68,60 @@ export default function EditProfile({ user }) {
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-muted px-4 py-12">
-            <Card className="w-full max-w-lg shadow-lg">
-                <CardHeader>
-                    <CardTitle className="text-2xl text-emerald-700">Criar perfil</CardTitle>
-                </CardHeader>
-
-                <CardContent className="space-y-6">
-                    <div className="flex items-center gap-4">
+        <FancyBackground>
+            <div className="min-h-screen flex items-center justify-center px-4 py-12">
+                <Card className="w-full max-w-lg shadow-lg">
+                    <CardHeader className="flex justify-between items-center">
+                        <CardTitle className="text-2xl text-emerald-700">Criar perfil</CardTitle>
                         <img
-                            src={user?.images[0].url}
-                            alt={user?.display_name}
-                            className="w-16 h-16 rounded-full border"
+                            src={user?.images?.[0]?.url}
+                            alt={user?.display_name || "Foto do perfil"}
+                            className="w-20 h-20 rounded-full border shadow-md object-cover"
                         />
-                        <p className="text-muted-foreground text-sm">ID: {user?.id}</p>
-                    </div>
+                    </CardHeader>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="displayName">Nome de exibição</Label>
-                        <Input
-                            id="displayName"
-                            value={displayName}
-                            onChange={(e) => setDisplayName(e.target.value)}
-                        />
-                    </div>
+                    <CardContent className="space-y-6">
 
-                    <div className="space-y-2">
-                        <Label htmlFor="bio">Biografia</Label>
-                        <Textarea
-                            id="bio"
-                            value={bio}
-                            onChange={(e) => setBio(e.target.value)}
-                            placeholder="Conte um pouco sobre você..."
-                        />
-                    </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="displayName">Nome de exibição</Label>
+                            <Input
+                                id="displayName"
+                                value={displayName}
+                                onChange={(e) => setDisplayName(e.target.value)}
+                            />
+                        </div>
 
-                    <div className="pt-4 flex justify-end">
-                        <Button
-                            onClick={handleSubmit}
-                            disabled={isLoading}
-                            className="mt-4 w-full"
-                        >
-                            {isLoading ? (
-                                <>
-                                    <Loader2 className="animate-spin w-5 h-5 mr-2" />
-                                    Criando perfil...
-                                </>
-                            ) : (
-                                "Criar Perfil"
-                            )}
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
+                        <div className="space-y-2">
+                            <Label htmlFor="bio">Biografia</Label>
+                            <Textarea
+                                id="bio"
+                                value={bio}
+                                onChange={(e) => setBio(e.target.value)}
+                                placeholder="Conte um pouco sobre você..."
+                            />
+                        </div>
 
-            <Button
-                variant="destructive"
-                className="absolute bottom-4 right-4"
-                onClick={() => {
-                    localStorage.removeItem("consent_data");
-                    navigate("/");
-                }}
-            >
-                Limpar Consentimento
-            </Button>
-        </div>
+                        <div className="pt-4 flex justify-end">
+                            <Button
+                                onClick={handleSubmit}
+                                disabled={isLoading}
+                                className="mt-4 w-full"
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <Loader2 className="animate-spin w-5 h-5 mr-2"/>
+                                        Criando perfil...
+                                    </>
+                                ) : (
+                                    "Criar Perfil"
+                                )}
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
+
+            </div>
+        </FancyBackground>
     );
 }
 
