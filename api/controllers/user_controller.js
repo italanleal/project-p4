@@ -110,8 +110,6 @@ export class UserController {
     
     }
 
-
-
     async userData(req, res) {
         const access_token = req.headers.authorization.split(' ')[1]
 
@@ -153,7 +151,19 @@ export class UserController {
             const op2 = []
             for (const d of data) {
                 op2.push(await Promise.all(d.artists.map(async artist => {
-                    const a = createArtist(artist.id, artist.name)
+
+                    const artistId = artist.id
+                    let url;
+
+                    const result = await fetch(`https://api.spotify.com/v1/artists/${artistId}`, {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${access_token}`,
+                        },
+                    });
+                    url = await result.json().images?.[0]?.url || null;
+
+                    const a = createArtist(artistId, artist.name, url);
                     try {
                         return await this.artistService.createArtist(a);
                     } catch (err) {
@@ -268,9 +278,6 @@ export class UserController {
             } 
     
     }
-
-
-    
 
 }
 
