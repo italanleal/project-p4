@@ -68,6 +68,7 @@ export async function fetchNetworkGraphData({ setElements, setError, setLoading 
             nodeMap.set(artist.elementId, {
                 data: {
                     id: artist.elementId,
+                    artistId: artist.properties?.artistId,
                     label: artist.properties?.artistName,
                     type: "Artist",
                 },
@@ -157,6 +158,7 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                     nodeMap.set(artist.elementId, {
                         data: {
                             id: artist.elementId,
+                            artistId: artist.properties?.artistId,
                             label: artist.properties.artistName,
                             type: "Artist"
                         }
@@ -233,6 +235,7 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                 nodeMap.set(artist.elementId, {
                     data: {
                         id: artist.elementId,
+                        artistId: artist.properties?.artistId,
                         label: artist.properties?.artistName,
                         type: "Artist"
                     }
