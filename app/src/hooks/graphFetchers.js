@@ -1,25 +1,6 @@
 const vps = "https://b26cc315-7b34-4312-ae43-ac6761795181.vercel.app";
 const token = localStorage.getItem("access_token");
 
-async function fetchArtistImage(artistId, token) {
-    try {
-        const res = await fetch(`https://api.spotify.com/v1/artists/${artistId}`, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        if (!res.ok) throw new Error("Failed to fetch artist image");
-
-        const data = await res.json();
-        return data.images?.[0]?.url || null;
-    } catch (error) {
-        console.error(`Error fetching image for artist ${artistId}:`, error);
-        return null;
-    }
-}
-
 export async function fetchNetworkGraphData({ setElements, setError, setLoading }) {
 
     const filterOptions = [
@@ -30,13 +11,13 @@ export async function fetchNetworkGraphData({ setElements, setError, setLoading 
     setLoading(true);
     setError(null);
     try {
-            //atualiza a rede
-        fetch(vps+"/api/user/data", {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+        //atualiza a rede
+        await fetch(vps + "/api/user/data", {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
 
         const artistsResponse = await fetch(filterOptions[0].endpoint, {
             method: "GET",
@@ -86,7 +67,6 @@ export async function fetchNetworkGraphData({ setElements, setError, setLoading 
             });
 
             const artistId = artist.properties?.artistId;
-            const artistImage = await fetchArtistImage(artistId, token);
             
             nodeMap.set(artist.elementId, {
                 data: {
@@ -94,7 +74,7 @@ export async function fetchNetworkGraphData({ setElements, setError, setLoading 
                     artistId: artistId,
                     label: artist.properties?.artistName,
                     type: "Artist",
-                    image: artistImage || null,
+                    image: artist.properties?.artistImageUrl || null,
                 },
             });
 
@@ -180,7 +160,6 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                     const artist = entry._fields[0];
 
                     const artistId = artist.properties?.artistId;
-                    const artistImage = await fetchArtistImage(artistId, token);
                     
                     nodeMap.set(artist.elementId, {
                         data: {
@@ -188,7 +167,7 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                             artistId: artistId,
                             label: artist.properties?.artistName,
                             type: "Artist",
-                            image: artistImage || null,
+                            image: artist.properties?.artistImageUrl || null,
                         },
                     });
 
@@ -261,7 +240,6 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                 });
 
                 const artistId = artist.properties?.artistId;
-                const artistImage = await fetchArtistImage(artistId, token);
                 
                 nodeMap.set(artist.elementId, {
                     data: {
@@ -269,7 +247,7 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                         artistId: artistId,
                         label: artist.properties?.artistName,
                         type: "Artist",
-                        image: artistImage || null,
+                        image: artist.properties?.artistImageUrl || null,
                     },
                 });
 

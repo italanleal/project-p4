@@ -13,7 +13,8 @@ export class ArtistRepository {
                 RETURN a`,
                 {
                     artistId: artist.artistId,
-                    artistName: artist.artistName
+                    artistName: artist.artistName,
+                    artistImageUrl: artist.artistImageUrl,
                 })
             return result.records[0].get(0).properties;
         } finally {
@@ -121,11 +122,12 @@ export class ArtistRepository {
         try {
             const result = await session.run(
                 `MATCH (a:Artist) 
-                RETURN a.artistId AS artistId, a.artistName AS artistName`
+                RETURN a.artistId AS artistId, a.artistName AS artistName, a.artistImageUrl AS artistImageUrl`
             );
             return result.records.map(record => ({
                 artistId: record.get('artistId'),
-                name: record.get('artistName')
+                name: record.get('artistName'),
+                artistImageUrl: record.get('artistImageUrl'),
             }));
         } finally{
             await session.close();
