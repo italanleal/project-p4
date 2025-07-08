@@ -1,4 +1,5 @@
 const vps = "https://b26cc315-7b34-4312-ae43-ac6761795181.vercel.app";
+const token = localStorage.getItem("access_token");
 
 async function fetchArtistImage(artistId, token) {
     try {
@@ -29,7 +30,6 @@ export async function fetchNetworkGraphData({ setElements, setError, setLoading 
     setLoading(true);
     setError(null);
     try {
-        const token = localStorage.getItem("access_token");
             //atualiza a rede
         fetch(vps+"/api/user/data", {
                 method: "GET",
@@ -148,7 +148,7 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
         const response = await fetch(selectedEndpoint, {
             method: 'GET',
             headers: {
-                Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+                Authorization: `Bearer ${token}`,
             },
         });
 
