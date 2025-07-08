@@ -1,4 +1,24 @@
 const vps = "https://b26cc315-7b34-4312-ae43-ac6761795181.vercel.app";
+
+async function fetchArtistImage(artistId, token) {
+    try {
+        const res = await fetch(`https://api.spotify.com/v1/artists/${artistId}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch artist image");
+
+        const data = await res.json();
+        return data.images?.[0]?.url || null;
+    } catch (error) {
+        console.error(`Error fetching image for artist ${artistId}:`, error);
+        return null;
+    }
+}
+
 export async function fetchNetworkGraphData({ setElements, setError, setLoading }) {
 
     const filterOptions = [
@@ -65,12 +85,16 @@ export async function fetchNetworkGraphData({ setElements, setError, setLoading 
                 },
             });
 
+            const artistId = artist.properties?.artistId;
+            const artistImage = await fetchArtistImage(artistId, token);
+            
             nodeMap.set(artist.elementId, {
                 data: {
                     id: artist.elementId,
-                    artistId: artist.properties?.artistId,
+                    artistId: artistId,
                     label: artist.properties?.artistName,
                     type: "Artist",
+                    image: artistImage || null,
                 },
             });
 
@@ -155,13 +179,17 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                 for (const entry of raw) {
                     const artist = entry._fields[0];
 
+                    const artistId = artist.properties?.artistId;
+                    const artistImage = await fetchArtistImage(artistId, token);
+                    
                     nodeMap.set(artist.elementId, {
                         data: {
                             id: artist.elementId,
-                            artistId: artist.properties?.artistId,
-                            label: artist.properties.artistName,
-                            type: "Artist"
-                        }
+                            artistId: artistId,
+                            label: artist.properties?.artistName,
+                            type: "Artist",
+                            image: artistImage || null,
+                        },
                     });
 
                     edgeMap.set(`${userId}->${artist.elementId}`, {
@@ -232,13 +260,17 @@ export async function fetchDashboardGraphData({ setElements, setError, setLoadin
                     }
                 });
 
+                const artistId = artist.properties?.artistId;
+                const artistImage = await fetchArtistImage(artistId, token);
+                
                 nodeMap.set(artist.elementId, {
                     data: {
                         id: artist.elementId,
-                        artistId: artist.properties?.artistId,
+                        artistId: artistId,
                         label: artist.properties?.artistName,
-                        type: "Artist"
-                    }
+                        type: "Artist",
+                        image: artistImage || null,
+                    },
                 });
 
                 edgeMap.set(rel1.elementId, {
