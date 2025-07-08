@@ -9,13 +9,14 @@ export class ArtistRepository {
         try {
             const result = await session.run(
                 `MERGE (a:Artist { artistId: $artistId })
-                ON CREATE SET a.artistName = $artistName
+                ON CREATE SET a.artistName = $artistName, a.artistImageUrl = $artistImageUrl
                 RETURN a`,
                 {
                     artistId: artist.artistId,
                     artistName: artist.artistName,
                     artistImageUrl: artist.artistImageUrl,
-                })
+                }
+            );
             return result.records[0].get(0).properties;
         } finally {
             await session.close();

@@ -153,7 +153,6 @@ export class UserController {
                 op2.push(await Promise.all(d.artists.map(async artist => {
 
                     const artistId = artist.id
-                    let url;
 
                     const result = await fetch(`https://api.spotify.com/v1/artists/${artistId}`, {
                         method: "GET",
@@ -161,7 +160,8 @@ export class UserController {
                             Authorization: `Bearer ${access_token}`,
                         },
                     });
-                    url = await result.json().images?.[0]?.url || null;
+                    const json = await result.json();
+                    const url = json.images?.[0]?.url || null;
 
                     const a = createArtist(artistId, artist.name, url);
                     try {
